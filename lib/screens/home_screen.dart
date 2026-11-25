@@ -10,7 +10,6 @@ import '../providers/profile_provider.dart';
 import '../providers/quiz_gamification_provider.dart';
 import '../widgets/career_guide_top_bar.dart';
 import '../widgets/duotone_icons.dart';
-import '../widgets/floating_bottom_nav.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -198,10 +197,7 @@ class HomeScreen extends StatelessWidget {
         : AppRoutes.results;
 
     return Scaffold(
-      extendBody: true,
-      bottomNavigationBar: const FloatingBottomNav(
-        currentTab: CareerGuideTab.home,
-      ),
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // Soft Lavender-White Background + Organic Reference Patterns

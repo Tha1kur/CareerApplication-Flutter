@@ -22,6 +22,12 @@ abstract final class AppRoutes {
 
   static String collegeDetails(String collegeId) => '/college/$collegeId';
 
+  static String recommendationsWithCareer(String careerKey) {
+    final clean = careerKey.trim();
+    if (clean.isEmpty) return recommendations;
+    return '$recommendations?career=${Uri.encodeQueryComponent(clean)}';
+  }
+
   static String compareWithIds(List<String> ids) {
     final cleanIds = ids.where((id) => id.trim().isNotEmpty).take(3).toList();
     if (cleanIds.isEmpty) return compare;

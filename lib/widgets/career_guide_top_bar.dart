@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../core/constants/app_routes.dart';
+import '../core/router/app_navigation.dart';
 import '../core/theme/app_colors.dart';
 import '../providers/catalog_provider.dart';
 import '../providers/quiz_gamification_provider.dart';
@@ -100,7 +101,7 @@ class CareerGuideTopBar extends StatelessWidget {
                       TextButton.icon(
                         onPressed: () {
                           Navigator.of(sheetContext).pop();
-                          context.push(AppRoutes.settings);
+                          context.pushUnique(AppRoutes.settings);
                         },
                         icon: const Icon(Icons.settings_outlined, size: 18),
                         label: const Text('Settings'),
@@ -168,7 +169,7 @@ class CareerGuideTopBar extends StatelessWidget {
                             ),
                             onTap: () {
                               Navigator.of(sheetContext).pop();
-                              context.push(item.route);
+                              context.pushUnique(item.route);
                             },
                           ),
                         );
@@ -202,7 +203,7 @@ class CareerGuideTopBar extends StatelessWidget {
             _CircleHeaderButton(
               tooltip: 'Back',
               shadowColor: shadowColor,
-              onTap: onBack ?? () => context.pop(),
+              onTap: onBack ?? () => context.safePop(),
               child: Icon(
                 Icons.arrow_back_rounded,
                 size: 20,
@@ -248,7 +249,7 @@ class CareerGuideTopBar extends StatelessWidget {
           _CircleHeaderButton(
             tooltip: 'Profile',
             shadowColor: shadowColor,
-            onTap: () => context.push(AppRoutes.profile),
+            onTap: () => context.pushUnique(AppRoutes.profile),
             child: Container(
               width: 36,
               height: 36,

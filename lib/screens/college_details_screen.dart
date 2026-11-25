@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../core/constants/app_routes.dart';
+import '../core/router/app_navigation.dart';
 import '../core/utils/external_link_helper.dart';
 import '../providers/catalog_provider.dart';
 import '../widgets/empty_state_view.dart';
@@ -65,7 +66,7 @@ class CollegeDetailsScreen extends StatelessWidget {
                 subtitle:
                     'We could not find an institution matching ID "$collegeId".',
                 actionLabel: 'Browse Colleges',
-                onAction: () => context.go(AppRoutes.colleges),
+                onAction: () => context.safePop(fallback: AppRoutes.colleges),
               )
             : ListView(
                 padding: const EdgeInsets.all(16),

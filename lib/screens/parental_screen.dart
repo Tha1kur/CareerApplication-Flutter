@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/constants/app_routes.dart';
+import '../core/router/app_navigation.dart';
 import '../core/utils/external_link_helper.dart';
 import '../widgets/gradient_hero_card.dart';
 
@@ -194,7 +195,7 @@ class ParentalScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             OutlinedButton(
-              onPressed: () => context.go(AppRoutes.home),
+              onPressed: () => context.safePop(),
               child: const Text('Back to Home'),
             ),
           ],

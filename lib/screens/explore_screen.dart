@@ -9,7 +9,6 @@ import '../models/scholarship.dart';
 import '../providers/catalog_provider.dart';
 import '../providers/quiz_gamification_provider.dart';
 import '../widgets/career_guide_top_bar.dart';
-import '../widgets/floating_bottom_nav.dart';
 
 /// Exact reference CareerGuide Explore screen (PDF Page 4):
 /// - Fixed layout, zero floating animations, zero 3-line sparkles, zero tap click sounds
@@ -164,12 +163,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ? AppRoutes.aiMentor
         : AppRoutes.quiz;
 
-    return Scaffold(
-      extendBody: true,
-      bottomNavigationBar: const FloatingBottomNav(
-        currentTab: CareerGuideTab.explore,
-      ),
-      body: Stack(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) context.go(AppRoutes.home);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
         children: [
           Positioned.fill(
             child: CustomPaint(
@@ -509,8 +510,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           child: _TrendingCareerCard(
                             title: 'Software\nDeveloper',
                             icon: Icons.laptop_mac_rounded,
-                            onTap: () =>
-                                context.push(AppRoutes.recommendations),
+                            onTap: () => context.push(
+                              AppRoutes.recommendationsWithCareer(
+                                'Engineering',
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 9),
@@ -518,8 +522,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           child: _TrendingCareerCard(
                             title: 'Data\nAnalyst',
                             icon: Icons.bar_chart_rounded,
-                            onTap: () =>
-                                context.push(AppRoutes.recommendations),
+                            onTap: () => context.push(
+                              AppRoutes.recommendationsWithCareer('Science'),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 9),
@@ -527,8 +532,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           child: _TrendingCareerCard(
                             title: 'UI/UX\nDesigner',
                             icon: Icons.draw_rounded,
-                            onTap: () =>
-                                context.push(AppRoutes.recommendations),
+                            onTap: () => context.push(
+                              AppRoutes.recommendationsWithCareer('Design'),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 9),
@@ -536,7 +542,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           child: _TrendingCareerCard(
                             title: 'AI/ML\nEngineer',
                             icon: Icons.memory_rounded,
-                            onTap: () => context.push(AppRoutes.aiMentor),
+                            onTap: () => context.push(
+                              AppRoutes.recommendationsWithCareer(
+                                'Engineering',
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -699,6 +709,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
