@@ -1,11 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'app.dart';
+import 'core/constants/app_routes.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final dependencies = AppDependencies.create();
-  await dependencies.loadAll();
-
-  runApp(CareerGuidanceApp(dependencies: dependencies));
+  runApp(const CareerGuidanceApp(initialLocation: AppRoutes.splash));
 }

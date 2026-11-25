@@ -16,13 +16,23 @@ import '../../screens/results_screen.dart';
 import '../../screens/saved_screen.dart';
 import '../../screens/scholarship_screen.dart';
 import '../../screens/settings_screen.dart';
+import '../../screens/splash_screen.dart';
+import '../../screens/welcome_screen.dart';
 import '../constants/app_routes.dart';
 
-/// Centralized GoRouter wiring all 16 application screens.
+/// Centralized GoRouter wiring all application screens.
 GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
   return GoRouter(
     initialLocation: initialLocation,
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.welcome,
+        builder: (context, state) => const WelcomeScreen(),
+      ),
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
+import 'core/constants/app_routes.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
@@ -81,10 +82,16 @@ class AppDependencies {
 }
 
 class CareerGuidanceApp extends StatefulWidget {
-  const CareerGuidanceApp({super.key, this.dependencies, this.router});
+  const CareerGuidanceApp({
+    super.key,
+    this.dependencies,
+    this.router,
+    this.initialLocation = AppRoutes.home,
+  });
 
   final AppDependencies? dependencies;
   final GoRouter? router;
+  final String initialLocation;
 
   @override
   State<CareerGuidanceApp> createState() => _CareerGuidanceAppState();
@@ -100,10 +107,12 @@ class _CareerGuidanceAppState extends State<CareerGuidanceApp> {
     super.initState();
     _ownsDeps = widget.dependencies == null;
     _deps = widget.dependencies ?? AppDependencies.create();
-    if (!_deps.themeProvider.isLoaded) {
+    if (!_deps.themeProvider.isLoaded &&
+        widget.initialLocation != AppRoutes.splash) {
       unawaited(_deps.loadAll());
     }
-    _router = widget.router ?? createAppRouter();
+    _router =
+        widget.router ?? createAppRouter(initialLocation: widget.initialLocation);
   }
 
   @override
@@ -126,6 +135,7 @@ class _CareerGuidanceAppState extends State<CareerGuidanceApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<AppDependencies>.value(value: _deps),
         ChangeNotifierProvider<ThemeProvider>.value(value: _deps.themeProvider),
         ChangeNotifierProvider<ProfileProvider>.value(
           value: _deps.profileProvider,

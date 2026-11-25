@@ -1,5 +1,7 @@
-/// Typed route paths for all 16 screens in Career Guidance Community.
+/// Typed route paths for all screens in CareerGuide.
 abstract final class AppRoutes {
+  static const String splash = '/splash';
+  static const String welcome = '/welcome';
   static const String home = '/';
   static const String quiz = '/quiz';
   static const String results = '/results';

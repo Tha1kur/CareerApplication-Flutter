@@ -24,6 +24,7 @@ class LocalStorageService {
   static const String keyProfileGoal = 'profile_goal';
   static const String keyThemeMode = 'theme_mode';
   static const String keySavedCareer = 'saved_career_key';
+  static const String keyHasSeenWelcome = 'has_seen_welcome';
 
   static const String keyPoints = 'points';
   static const String keyBadges = 'badges';
@@ -116,6 +117,15 @@ class LocalStorageService {
 
   Future<void> saveSavedCareerKey(String careerKey) {
     return _serialized((prefs) => prefs.setString(keySavedCareer, careerKey));
+  }
+
+  Future<bool> loadHasSeenWelcome() async {
+    final prefs = await _getPrefs();
+    return prefs.getBool(keyHasSeenWelcome) ?? false;
+  }
+
+  Future<void> setHasSeenWelcome(bool seen) {
+    return _serialized((prefs) => prefs.setBool(keyHasSeenWelcome, seen));
   }
 
   // ---------------- Gamification Progress & Atomic Rewards ----------------
