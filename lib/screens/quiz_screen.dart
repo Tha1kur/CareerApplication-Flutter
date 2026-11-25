@@ -83,7 +83,9 @@ class _QuizScreenState extends State<QuizScreen> {
     final isDark = brightness == Brightness.dark;
     final textTheme = Theme.of(context).textTheme;
 
-    final safeIndex = questions.isEmpty ? 0 : _index.clamp(0, questions.length - 1);
+    final safeIndex = questions.isEmpty
+        ? 0
+        : _index.clamp(0, questions.length - 1);
     final currentQuestion = questions.isEmpty ? null : questions[safeIndex];
     final answeredCount = questions
         .where((q) => (draft[q.id] ?? '').trim().isNotEmpty)
@@ -96,9 +98,7 @@ class _QuizScreenState extends State<QuizScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: CustomPaint(
-              painter: _QuizBackdropPainter(isDark: isDark),
-            ),
+            child: CustomPaint(painter: _QuizBackdropPainter(isDark: isDark)),
           ),
           SafeArea(
             child: Column(
@@ -212,8 +212,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       ? EmptyStateView(
                           icon: Icons.quiz_outlined,
                           title: 'No quiz questions available',
-                          subtitle:
-                              'Could not find questions in assets/data/aptitudequiz.json.',
+                          subtitle: 'Could not find questions in assets/data/aptitudequiz.json.',
                           actionLabel: 'Back to Home',
                           onAction: () => _goBack(context),
                         )
@@ -460,9 +459,8 @@ class _QuizScreenState extends State<QuizScreen> {
                                             draft[currentQuestion.id] ==
                                             currentQuestion.options[i].value,
                                         onTap: () {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).hideCurrentSnackBar();
+                                          ScaffoldMessenger.of(context)
+                                              .hideCurrentSnackBar();
                                           unawaited(
                                             provider.selectDraftAnswer(
                                               currentQuestion.id,
@@ -528,10 +526,9 @@ class _QuizScreenState extends State<QuizScreen> {
                                             ),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: const Color(0xFF6B2FD0)
-                                                    .withAlpha(
-                                                      isDark ? 60 : 52,
-                                                    ),
+                                                color: const Color(
+                                                  0xFF6B2FD0,
+                                                ).withAlpha(isDark ? 60 : 52),
                                                 blurRadius: 14,
                                                 offset: const Offset(0, 5),
                                               ),
@@ -548,8 +545,9 @@ class _QuizScreenState extends State<QuizScreen> {
                                               onTap: isLast
                                                   ? () =>
                                                         _handleSubmit(provider)
-                                                  : () =>
-                                                        setState(() => _index++),
+                                                  : () => setState(
+                                                      () => _index++,
+                                                    ),
                                               child: Center(
                                                 child: Text(
                                                   isLast ? 'Submit' : 'Next',
@@ -660,9 +658,7 @@ class _ReferenceOptionCard extends StatelessWidget {
                       fontWeight: FontWeight.w800,
                       color: selected
                           ? Colors.white
-                          : (isDark
-                                ? scheme.primary
-                                : const Color(0xFF6B2FD0)),
+                          : (isDark ? scheme.primary : const Color(0xFF6B2FD0)),
                     ),
                   ),
                 ),
@@ -777,11 +773,7 @@ class _QuizBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
 
@@ -952,11 +944,15 @@ class _QuizClipboardArtPainter extends CustomPainter {
     canvas.drawRect(
       Rect.fromCenter(center: Offset.zero, width: w * 0.11, height: h * 0.50),
       Paint()
-        ..shader = const LinearGradient(
-          colors: [Color(0xFF8C53EE), Color(0xFF5D26C6)],
-        ).createShader(
-          Rect.fromCenter(center: Offset.zero, width: w * 0.11, height: h * 0.50),
-        ),
+        ..shader =
+            const LinearGradient(colors: [Color(0xFF8C53EE), Color(0xFF5D26C6)])
+                .createShader(
+                  Rect.fromCenter(
+                    center: Offset.zero,
+                    width: w * 0.11,
+                    height: h * 0.50,
+                  ),
+                ),
     );
     // Silver cone + dark tip
     final cone = Path()

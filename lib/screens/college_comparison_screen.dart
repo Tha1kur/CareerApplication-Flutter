@@ -259,8 +259,7 @@ class _CollegeComparisonScreenState extends State<CollegeComparisonScreen> {
                       ? EmptyStateView(
                           icon: Icons.compare_arrows_rounded,
                           title: 'No colleges selected for comparison',
-                          subtitle:
-                              'Select up to 3 institutions to compare rank, fees, intake, and focus areas side by side.',
+                          subtitle: 'Select up to 3 institutions to compare rank, fees, intake, and focus areas side by side.',
                           actionLabel: 'Select Colleges',
                           onAction: () => _showAddCollegeSheet(allColleges),
                         )
@@ -314,8 +313,7 @@ class _CollegeComparisonScreenState extends State<CollegeComparisonScreen> {
                                         ),
                                       ),
                                       onVisitWebsite: () {
-                                        final url =
-                                            selectedColleges[i].website;
+                                        final url = selectedColleges[i].website;
                                         if (url != null && url.isNotEmpty) {
                                           unawaited(
                                             launchExternalUrlSafely(
@@ -599,11 +597,7 @@ class _CompareBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

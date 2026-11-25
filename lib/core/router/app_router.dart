@@ -39,18 +39,14 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.splash,
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => buildFadePage(
-          key: state.pageKey,
-          child: const SplashScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            buildFadePage(key: state.pageKey, child: const SplashScreen()),
       ),
       GoRoute(
         path: AppRoutes.welcome,
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => buildFadePage(
-          key: state.pageKey,
-          child: const WelcomeScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            buildFadePage(key: state.pageKey, child: const WelcomeScreen()),
       ),
 
       // Jitter-free Stateful Shell for Bottom-Nav Root Tabs (kept mounted + GPU crossfade)
@@ -69,9 +65,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
             routes: [
               GoRoute(
                 path: AppRoutes.home,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: HomeScreen(),
-                ),
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: HomeScreen()),
               ),
             ],
           ),
@@ -79,9 +74,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
             routes: [
               GoRoute(
                 path: AppRoutes.explore,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: ExploreScreen(),
-                ),
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: ExploreScreen()),
               ),
             ],
           ),
@@ -89,9 +83,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
             routes: [
               GoRoute(
                 path: AppRoutes.saved,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: SavedScreen(),
-                ),
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: SavedScreen()),
               ),
             ],
           ),
@@ -99,9 +92,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
             routes: [
               GoRoute(
                 path: AppRoutes.profile,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: ProfileScreen(),
-                ),
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: ProfileScreen()),
               ),
             ],
           ),
@@ -112,10 +104,8 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.quiz,
         parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => buildSharedAxisPage(
-          key: state.pageKey,
-          child: const QuizScreen(),
-        ),
+        pageBuilder: (context, state) =>
+            buildSharedAxisPage(key: state.pageKey, child: const QuizScreen()),
       ),
       GoRoute(
         path: AppRoutes.results,
@@ -295,10 +285,7 @@ class _SmoothFadeBranchContainer extends StatelessWidget {
             curve: Curves.easeOutCubic,
             child: IgnorePointer(
               ignoring: i != currentIndex,
-              child: TickerMode(
-                enabled: i == currentIndex,
-                child: children[i],
-              ),
+              child: TickerMode(enabled: i == currentIndex, child: children[i]),
             ),
           ),
       ],

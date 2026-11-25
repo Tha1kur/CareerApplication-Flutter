@@ -105,8 +105,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                       ? EmptyStateView(
                           icon: Icons.analytics_outlined,
                           title: 'No results yet',
-                          subtitle:
-                              'Take the aptitude quiz to see your career matches.',
+                          subtitle: 'Take the aptitude quiz to see your career matches.',
                           actionLabel: 'Start Quiz',
                           onAction: () => context.push(AppRoutes.quiz),
                         )
@@ -151,11 +150,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: const LinearGradient(
-              colors: [
-                Color(0xFF5D26C6),
-                Color(0xFF7E3EE2),
-                Color(0xFF9757EE),
-              ],
+              colors: [Color(0xFF5D26C6), Color(0xFF7E3EE2), Color(0xFF9757EE)],
             ),
             boxShadow: [
               BoxShadow(
@@ -327,7 +322,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     ),
                   ],
                 ),
-                Divider(height: 16, color: scheme.outlineVariant.withAlpha(140)),
+                Divider(
+                  height: 16,
+                  color: scheme.outlineVariant.withAlpha(140),
+                ),
                 for (var i = 0; i < history.take(4).length; i++)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
@@ -484,11 +482,7 @@ class _ResultsBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

@@ -6,11 +6,7 @@ import '../core/theme/app_colors.dart';
 
 /// Standalone CareerGuide 3D violet graduation cap + winged open book emblem.
 class CareerGuideEmblem extends StatelessWidget {
-  const CareerGuideEmblem({
-    super.key,
-    this.width = 44,
-    this.height = 36,
-  });
+  const CareerGuideEmblem({super.key, this.width = 44, this.height = 36});
 
   final double width;
   final double height;
@@ -25,9 +21,7 @@ class CareerGuideEmblem extends StatelessWidget {
         painter: _BrandEmblemPainter(
           primary: isDark ? AppColors.darkPrimary : const Color(0xFF7B3BE0),
           deep: isDark ? const Color(0xFF9F7AEA) : const Color(0xFF561FB8),
-          lavender: isDark
-              ? const Color(0xFF5B3FA6)
-              : const Color(0xFFA77DF6),
+          lavender: isDark ? const Color(0xFF5B3FA6) : const Color(0xFFA77DF6),
           pageColor: isDark ? const Color(0xFF282046) : Colors.white,
           gold: AppColors.accentGold,
         ),

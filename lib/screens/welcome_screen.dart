@@ -53,7 +53,8 @@ class WelcomeScreen extends StatelessWidget {
                           clipBehavior: Clip.antiAlias,
                           child: InkWell(
                             enableFeedback: false,
-                            onTap: () => _completeAndGo(context, AppRoutes.home),
+                            onTap: () =>
+                                _completeAndGo(context, AppRoutes.home),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -155,9 +156,8 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF6B2FD0).withAlpha(
-                            isDark ? 72 : 64,
-                          ),
+                          color: const Color(0xFF6B2FD0)
+                              .withAlpha(isDark ? 72 : 64),
                           blurRadius: 18,
                           offset: const Offset(0, 8),
                         ),
@@ -198,8 +198,9 @@ class WelcomeScreen extends StatelessWidget {
 
                   // Bottom Secondary Action: "Already have a profile? Continue"
                   Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
                           'Already have a profile? ',
@@ -272,11 +273,7 @@ class _WelcomeBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F2FF),
-                  Color(0xFFFAF8FF),
-                  Color(0xFFF3ECFF),
-                ],
+              : const [Color(0xFFF6F2FF), Color(0xFFFAF8FF), Color(0xFFF3ECFF)],
         ).createShader(rect),
     );
 

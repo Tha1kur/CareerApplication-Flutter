@@ -39,13 +39,11 @@ CustomTransitionPage<T> buildTabPage<T>({
     reverseTransitionDuration: const Duration(milliseconds: 150),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       if (MediaQuery.disableAnimationsOf(context)) return child;
-      final fade = CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOut,
-      );
-      final scale = Tween<double>(begin: 0.988, end: 1.0).animate(
-        CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
-      );
+      final fade = CurvedAnimation(parent: animation, curve: Curves.easeOut);
+      final scale = Tween<double>(
+        begin: 0.988,
+        end: 1.0,
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
       return FadeTransition(
         opacity: fade,
         child: ScaleTransition(scale: scale, child: child),
@@ -66,16 +64,17 @@ CustomTransitionPage<T> buildSharedAxisPage<T>({
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       if (MediaQuery.disableAnimationsOf(context)) return child;
 
-      final incomingSlide = Tween<Offset>(
-        begin: const Offset(0.08, 0.0),
-        end: Offset.zero,
-      ).animate(
-        CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutCubic,
-          reverseCurve: Curves.easeInCubic,
-        ),
-      );
+      final incomingSlide =
+          Tween<Offset>(
+            begin: const Offset(0.08, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+              reverseCurve: Curves.easeInCubic,
+            ),
+          );
 
       final incomingFade = CurvedAnimation(
         parent: animation,
@@ -83,25 +82,23 @@ CustomTransitionPage<T> buildSharedAxisPage<T>({
         reverseCurve: Curves.easeIn,
       );
 
-      final outgoingSlide = Tween<Offset>(
-        begin: Offset.zero,
-        end: const Offset(-0.04, 0.0),
-      ).animate(
-        CurvedAnimation(
-          parent: secondaryAnimation,
-          curve: Curves.easeOutCubic,
-          reverseCurve: Curves.easeInCubic,
-        ),
-      );
+      final outgoingSlide =
+          Tween<Offset>(
+            begin: Offset.zero,
+            end: const Offset(-0.04, 0.0),
+          ).animate(
+            CurvedAnimation(
+              parent: secondaryAnimation,
+              curve: Curves.easeOutCubic,
+              reverseCurve: Curves.easeInCubic,
+            ),
+          );
 
       return SlideTransition(
         position: outgoingSlide,
         child: SlideTransition(
           position: incomingSlide,
-          child: FadeTransition(
-            opacity: incomingFade,
-            child: child,
-          ),
+          child: FadeTransition(opacity: incomingFade, child: child),
         ),
       );
     },

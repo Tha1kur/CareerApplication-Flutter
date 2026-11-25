@@ -42,9 +42,7 @@ class AiCareerMentorScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: CustomPaint(
-              painter: _MentorBackdropPainter(isDark: isDark),
-            ),
+            child: CustomPaint(painter: _MentorBackdropPainter(isDark: isDark)),
           ),
           SafeArea(
             child: ListView(
@@ -158,9 +156,8 @@ class AiCareerMentorScreen extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF6B2FD0).withAlpha(
-                            isDark ? 70 : 58,
-                          ),
+                          color: const Color(0xFF6B2FD0)
+                              .withAlpha(isDark ? 70 : 58),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -879,11 +876,7 @@ class _MentorBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

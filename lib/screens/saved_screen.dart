@@ -49,8 +49,7 @@ class _SavedScreenState extends State<SavedScreen> {
     final isDark = brightness == Brightness.dark;
     final textTheme = Theme.of(context).textTheme;
 
-    final showCareer =
-        _filter == _SavedFilter.all && savedCareerInfo != null;
+    final showCareer = _filter == _SavedFilter.all && savedCareerInfo != null;
     final visibleColleges = _filter == _SavedFilter.scholarships
         ? const <College>[]
         : savedColleges;
@@ -432,9 +431,7 @@ class _SavedPillTab extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: selected
                         ? Colors.white
-                        : (isDark
-                              ? scheme.onSurface
-                              : const Color(0xFF2F2A46)),
+                        : (isDark ? scheme.onSurface : const Color(0xFF2F2A46)),
                   ),
                 ),
               ],
@@ -497,7 +494,6 @@ class _ReferenceSavedCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(13, 13, 8, 13),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 52,
@@ -623,11 +619,7 @@ class _SavedBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
 

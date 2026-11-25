@@ -122,41 +122,44 @@ class _ExploreScreenState extends State<ExploreScreen> {
     final q = _query.trim().toLowerCase();
     final isSearching = q.isNotEmpty;
 
-    final matchedCareers = isSearching &&
-            (_searchScope == 'All' || _searchScope == 'Careers')
+    final matchedCareers =
+        isSearching && (_searchScope == 'All' || _searchScope == 'Careers')
         ? _careerDomains
-            .where(
-              (c) =>
-                  c.title.toLowerCase().contains(q) ||
-                  c.tags.toLowerCase().contains(q),
-            )
-            .toList()
+              .where(
+                (c) =>
+                    c.title.toLowerCase().contains(q) ||
+                    c.tags.toLowerCase().contains(q),
+              )
+              .toList()
         : const <({String title, String tags, String route})>[];
 
-    final matchedColleges = isSearching &&
-            (_searchScope == 'All' || _searchScope == 'Colleges')
+    final matchedColleges =
+        isSearching && (_searchScope == 'All' || _searchScope == 'Colleges')
         ? catalog.allColleges
-            .where(
-              (c) =>
-                  c.name.toLowerCase().contains(q) ||
-                  (c.city ?? '').toLowerCase().contains(q) ||
-                  (c.state ?? '').toLowerCase().contains(q) ||
-                  c.courses.any((course) => course.toLowerCase().contains(q)) ||
-                  c.tags.any((tag) => tag.toLowerCase().contains(q)),
-            )
-            .toList()
+              .where(
+                (c) =>
+                    c.id.toLowerCase().contains(q) ||
+                    c.name.toLowerCase().contains(q) ||
+                    (c.city ?? '').toLowerCase().contains(q) ||
+                    (c.state ?? '').toLowerCase().contains(q) ||
+                    c.courses.any(
+                      (course) => course.toLowerCase().contains(q),
+                    ) ||
+                    c.tags.any((tag) => tag.toLowerCase().contains(q)),
+              )
+              .toList()
         : const <College>[];
 
-    final matchedScholarships = isSearching &&
-            (_searchScope == 'All' || _searchScope == 'Scholarships')
+    final matchedScholarships =
+        isSearching && (_searchScope == 'All' || _searchScope == 'Scholarships')
         ? catalog.allScholarships
-            .where(
-              (s) =>
-                  s.name.toLowerCase().contains(q) ||
-                  s.category.toLowerCase().contains(q) ||
-                  s.tags.any((tag) => tag.toLowerCase().contains(q)),
-            )
-            .toList()
+              .where(
+                (s) =>
+                    s.name.toLowerCase().contains(q) ||
+                    s.category.toLowerCase().contains(q) ||
+                    s.tags.any((tag) => tag.toLowerCase().contains(q)),
+              )
+              .toList()
         : const <Scholarship>[];
 
     final personalizedRoute = quizProvider.progress.completedQuiz
@@ -171,531 +174,543 @@ class _ExploreScreenState extends State<ExploreScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Stack(
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _ExploreBackdropPainter(isDark: isDark),
+          children: [
+            Positioned.fill(
+              child: CustomPaint(
+                painter: _ExploreBackdropPainter(isDark: isDark),
+              ),
             ),
-          ),
-          SafeArea(
-            bottom: false,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 94),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 1. Exact Top Bar
-                  const CareerGuideTopBar(),
+            SafeArea(
+              bottom: false,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 94),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. Exact Top Bar
+                    const CareerGuideTopBar(),
 
-                  // 2. Hero: "Explore Your / Career Options" + Fixed Signpost Illustration
-                  SizedBox(
-                    height: 136,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Positioned(
-                          right: 6,
-                          bottom: 0,
-                          width: 170,
-                          height: 126,
-                          child: CustomPaint(
-                            painter: _SignpostBackdropPainter(isDark: isDark),
-                          ),
-                        ),
-                        Positioned(
-                          left: 18,
-                          top: 12,
-                          right: 146,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  style: textTheme.headlineSmall?.copyWith(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.6,
-                                    height: 1.15,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: 'Explore Your\n',
-                                      style: TextStyle(
-                                        color: isDark
-                                            ? scheme.onSurface
-                                            : const Color(0xFF17122B),
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: 'Career Options',
-                                      style: TextStyle(
-                                        color: isDark
-                                            ? scheme.primary
-                                            : const Color(0xFF7433D6),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                'Discover streams, careers, and\nopportunities that fit you.',
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: isDark
-                                      ? scheme.onSurfaceVariant
-                                      : const Color(0xFF4A4560),
-                                  height: 1.35,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          right: 12,
-                          bottom: 0,
-                          width: 138,
-                          height: 132,
-                          child: CustomPaint(
-                            painter: _ExploreSignpostPainter(isDark: isDark),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // 3. White Pill Search Bar + Filter Sliders Button
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Container(
-                      height: 52,
-                      padding: const EdgeInsets.only(left: 14, right: 8),
-                      decoration: BoxDecoration(
-                        color: scheme.surface,
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: scheme.outlineVariant.withAlpha(185),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.cardShadow(brightness),
-                            blurRadius: 16,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Row(
+                    // 2. Hero: "Explore Your / Career Options" + Fixed Signpost Illustration
+                    SizedBox(
+                      height: 136,
+                      child: Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          Icon(
-                            Icons.search_rounded,
-                            size: 22,
-                            color: isDark
-                                ? scheme.onSurfaceVariant
-                                : const Color(0xFF56506E),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: TextField(
-                              controller: _searchController,
-                              onChanged: (value) =>
-                                  setState(() => _query = value),
-                              style: TextStyle(
-                                fontSize: 13.8,
-                                color: scheme.onSurface,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: _searchScope == 'All'
-                                    ? 'Search careers, colleges, scholarships...'
-                                    : 'Search $_searchScope...',
-                                hintStyle: TextStyle(
-                                  fontSize: 13.5,
-                                  color: isDark
-                                      ? scheme.onSurfaceVariant
-                                      : const Color(0xFF7B7594),
-                                ),
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                filled: false,
-                                isDense: true,
-                                contentPadding: EdgeInsets.zero,
-                              ),
+                          Positioned(
+                            right: 6,
+                            bottom: 0,
+                            width: 170,
+                            height: 126,
+                            child: CustomPaint(
+                              painter: _SignpostBackdropPainter(isDark: isDark),
                             ),
                           ),
-                          if (isSearching)
-                            GestureDetector(
-                              onTap: () {
-                                _searchController.clear();
-                                setState(() => _query = '');
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 6),
-                                child: Icon(
-                                  Icons.close_rounded,
-                                  size: 18,
-                                  color: scheme.onSurfaceVariant,
+                          Positioned(
+                            left: 18,
+                            top: 12,
+                            right: 146,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  text: TextSpan(
+                                    style: textTheme.headlineSmall?.copyWith(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.6,
+                                      height: 1.15,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text: 'Explore Your\n',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? scheme.onSurface
+                                              : const Color(0xFF17122B),
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: 'Career Options',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? scheme.primary
+                                              : const Color(0xFF7433D6),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Discover streams, careers, and\nopportunities that fit you.',
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: isDark
+                                        ? scheme.onSurfaceVariant
+                                        : const Color(0xFF4A4560),
+                                    height: 1.35,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
                             ),
-                          Material(
-                            color: isDark
-                                ? scheme.primaryContainer
-                                : const Color(0xFFF0E8FF),
-                            borderRadius: BorderRadius.circular(11),
-                            clipBehavior: Clip.antiAlias,
-                            child: InkWell(
-                              enableFeedback: false,
-                              onTap: _openFilterSheet,
-                              child: SizedBox(
-                                width: 36,
-                                height: 36,
-                                child: Icon(
-                                  Icons.tune_rounded,
-                                  size: 19,
-                                  color: isDark
-                                      ? scheme.primary
-                                      : const Color(0xFF7433D6),
-                                ),
-                              ),
+                          ),
+                          Positioned(
+                            right: 12,
+                            bottom: 0,
+                            width: 138,
+                            height: 132,
+                            child: CustomPaint(
+                              painter: _ExploreSignpostPainter(isDark: isDark),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
 
-                  // Live Search Results (only shown when user types in search bar)
-                  if (isSearching) ...[
-                    const SizedBox(height: 12),
+                    // 3. White Pill Search Bar + Filter Sliders Button
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 14),
                       child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
+                        height: 52,
+                        padding: const EdgeInsets.only(left: 14, right: 8),
                         decoration: BoxDecoration(
                           color: scheme.surface,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(18),
                           border: Border.all(
-                            color: scheme.outlineVariant.withAlpha(180),
+                            color: scheme.outlineVariant.withAlpha(185),
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.cardShadow(brightness),
+                              blurRadius: 16,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            if (matchedCareers.isEmpty &&
-                                matchedColleges.isEmpty &&
-                                matchedScholarships.isEmpty)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 4,
+                            Icon(
+                              Icons.search_rounded,
+                              size: 22,
+                              color: isDark
+                                  ? scheme.onSurfaceVariant
+                                  : const Color(0xFF56506E),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) =>
+                                    setState(() => _query = value),
+                                style: TextStyle(
+                                  fontSize: 13.8,
+                                  color: scheme.onSurface,
                                 ),
-                                child: Text(
-                                  'No local matches for "$_query". Try "IIT", "Design", "Engineering", or "Scholarship".',
-                                  style: textTheme.bodySmall?.copyWith(
+                                decoration: InputDecoration(
+                                  hintText: _searchScope == 'All'
+                                      ? 'Search careers, colleges, scholarships...'
+                                      : 'Search $_searchScope...',
+                                  hintStyle: TextStyle(
+                                    fontSize: 13.5,
+                                    color: isDark
+                                        ? scheme.onSurfaceVariant
+                                        : const Color(0xFF7B7594),
+                                  ),
+                                  border: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  filled: false,
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.zero,
+                                ),
+                              ),
+                            ),
+                            if (isSearching)
+                              GestureDetector(
+                                onTap: () {
+                                  _searchController.clear();
+                                  setState(() => _query = '');
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 6),
+                                  child: Icon(
+                                    Icons.close_rounded,
+                                    size: 18,
                                     color: scheme.onSurfaceVariant,
                                   ),
                                 ),
-                              )
-                            else ...[
-                              for (final c in matchedCareers)
-                                _SearchResultTile(
-                                  icon: Icons.school_rounded,
-                                  title: c.title,
-                                  subtitle: 'Career Path',
-                                  onTap: () => context.push(c.route),
-                                ),
-                              for (final col in matchedColleges)
-                                _SearchResultTile(
-                                  icon: Icons.account_balance_rounded,
-                                  title: col.name,
-                                  subtitle: col.formattedLocation,
-                                  onTap: () => context.push(
-                                    AppRoutes.collegeDetails(col.id),
+                              ),
+                            Material(
+                              color: isDark
+                                  ? scheme.primaryContainer
+                                  : const Color(0xFFF0E8FF),
+                              borderRadius: BorderRadius.circular(11),
+                              clipBehavior: Clip.antiAlias,
+                              child: InkWell(
+                                enableFeedback: false,
+                                onTap: _openFilterSheet,
+                                child: SizedBox(
+                                  width: 36,
+                                  height: 36,
+                                  child: Icon(
+                                    Icons.tune_rounded,
+                                    size: 19,
+                                    color: isDark
+                                        ? scheme.primary
+                                        : const Color(0xFF7433D6),
                                   ),
                                 ),
-                              for (final sch in matchedScholarships)
-                                _SearchResultTile(
-                                  icon: Icons.workspace_premium_rounded,
-                                  title: sch.name,
-                                  subtitle:
-                                      '${sch.category}${sch.amount != null ? ' • ${sch.amount}' : ''}',
-                                  onTap: () =>
-                                      context.push(AppRoutes.scholarships),
-                                ),
-                            ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                  ],
 
-                  const SizedBox(height: 14),
-
-                  // 4. 4-Column Category Shortcuts Row (Exact Reference Look)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _CategoryShortcutCard(
-                            label: 'Careers',
-                            icon: Icons.school_rounded,
-                            onTap: () =>
-                                context.push(AppRoutes.recommendations),
+                    // Live Search Results (only shown when user types in search bar)
+                    if (isSearching) ...[
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: scheme.surface,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: scheme.outlineVariant.withAlpha(180),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: _CategoryShortcutCard(
-                            label: 'Colleges',
-                            icon: Icons.account_balance_rounded,
-                            onTap: () => context.push(AppRoutes.colleges),
-                          ),
-                        ),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: _CategoryShortcutCard(
-                            label: 'Scholarships',
-                            icon: Icons.layers_rounded,
-                            onTap: () => context.push(AppRoutes.scholarships),
-                          ),
-                        ),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: _CategoryShortcutCard(
-                            label: 'AI Mentor',
-                            icon: Icons.work_rounded,
-                            onTap: () => context.push(AppRoutes.aiMentor),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  // 5. "Trending Careers" Section + 4-Card Row
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Trending Careers',
-                            style: textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 16.5,
-                              letterSpacing: -0.3,
-                              color: isDark
-                                  ? scheme.onSurface
-                                  : const Color(0xFF17122B),
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (matchedCareers.isEmpty &&
+                                    matchedColleges.isEmpty &&
+                                    matchedScholarships.isEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 4,
+                                    ),
+                                    child: Text(
+                                      'No local matches for "$_query". Try "IIT", "Design", "Engineering", or "Scholarship".',
+                                      style: textTheme.bodySmall?.copyWith(
+                                        color: scheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  )
+                                else ...[
+                                  for (final c in matchedCareers)
+                                    _SearchResultTile(
+                                      icon: Icons.school_rounded,
+                                      title: c.title,
+                                      subtitle: 'Career Path',
+                                      onTap: () => context.push(c.route),
+                                    ),
+                                  for (final col in matchedColleges)
+                                    _SearchResultTile(
+                                      icon: Icons.account_balance_rounded,
+                                      title: col.name,
+                                      subtitle: col.formattedLocation,
+                                      onTap: () => context.push(
+                                        AppRoutes.collegeDetails(col.id),
+                                      ),
+                                    ),
+                                  for (final sch in matchedScholarships)
+                                    _SearchResultTile(
+                                      icon: Icons.workspace_premium_rounded,
+                                      title: sch.name,
+                                      subtitle:
+                                          '${sch.category}${sch.amount != null ? ' • ${sch.amount}' : ''}',
+                                      onTap: () =>
+                                          context.push(AppRoutes.scholarships),
+                                    ),
+                                ],
+                              ],
                             ),
                           ),
                         ),
-                        _ViewAllLink(
-                          onTap: () => context.push(AppRoutes.recommendations),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    ],
 
-                  const SizedBox(height: 10),
+                    const SizedBox(height: 14),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _TrendingCareerCard(
-                            title: 'Software\nDeveloper',
-                            icon: Icons.laptop_mac_rounded,
-                            onTap: () => context.push(
-                              AppRoutes.recommendationsWithCareer(
-                                'Engineering',
-                              ),
+                    // 4. 4-Column Category Shortcuts Row (Exact Reference Look)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _CategoryShortcutCard(
+                              label: 'Careers',
+                              icon: Icons.school_rounded,
+                              onTap: () =>
+                                  context.push(AppRoutes.recommendations),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: _TrendingCareerCard(
-                            title: 'Data\nAnalyst',
-                            icon: Icons.bar_chart_rounded,
-                            onTap: () => context.push(
-                              AppRoutes.recommendationsWithCareer('Science'),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: _CategoryShortcutCard(
+                              label: 'Colleges',
+                              icon: Icons.account_balance_rounded,
+                              onTap: () => context.push(AppRoutes.colleges),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: _TrendingCareerCard(
-                            title: 'UI/UX\nDesigner',
-                            icon: Icons.draw_rounded,
-                            onTap: () => context.push(
-                              AppRoutes.recommendationsWithCareer('Design'),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: _CategoryShortcutCard(
+                              label: 'Scholarships',
+                              icon: Icons.layers_rounded,
+                              onTap: () => context.push(AppRoutes.scholarships),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 9),
-                        Expanded(
-                          child: _TrendingCareerCard(
-                            title: 'AI/ML\nEngineer',
-                            icon: Icons.memory_rounded,
-                            onTap: () => context.push(
-                              AppRoutes.recommendationsWithCareer(
-                                'Engineering',
-                              ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: _CategoryShortcutCard(
+                              label: 'AI Mentor',
+                              icon: Icons.work_rounded,
+                              onTap: () => context.push(AppRoutes.aiMentor),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 18),
-
-                  // 6. "Recommended for You" Header + Exact Bottom Banner Card
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Recommended for You',
-                            style: textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              fontSize: 16.5,
-                              letterSpacing: -0.3,
-                              color: isDark
-                                  ? scheme.onSurface
-                                  : const Color(0xFF17122B),
-                            ),
-                          ),
-                        ),
-                        _ViewAllLink(
-                          onTap: () => context.push(AppRoutes.aiMentor),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: scheme.surface,
-                        borderRadius: BorderRadius.circular(22),
-                        border: Border.all(
-                          color: scheme.outlineVariant.withAlpha(180),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.cardShadow(brightness),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(17),
-                        child: CustomPaint(
-                          painter: _RecommendedBannerPainter(isDark: isDark),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              enableFeedback: false,
-                              onTap: () => context.push(personalizedRoute),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 11,
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // 5. "Trending Careers" Section + 4-Card Row
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Trending Careers',
+                              style: textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16.5,
+                                letterSpacing: -0.3,
+                                color: isDark
+                                    ? scheme.onSurface
+                                    : const Color(0xFF17122B),
+                              ),
+                            ),
+                          ),
+                          _ViewAllLink(
+                            onTap: () =>
+                                context.push(AppRoutes.recommendations),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _TrendingCareerCard(
+                              title: 'Software\nDeveloper',
+                              icon: Icons.laptop_mac_rounded,
+                              onTap: () => context.push(
+                                AppRoutes.recommendationsWithCareer(
+                                  'Engineering',
                                 ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 72,
-                                      height: 52,
-                                      child: Image.asset(
-                                        'assets/images/home_books.png',
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (_, _, _) => Icon(
-                                          Icons.menu_book_rounded,
-                                          color: scheme.primary,
-                                          size: 32,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: _TrendingCareerCard(
+                              title: 'Data\nAnalyst',
+                              icon: Icons.bar_chart_rounded,
+                              onTap: () => context.push(
+                                AppRoutes.recommendationsWithCareer('Science'),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: _TrendingCareerCard(
+                              title: 'UI/UX\nDesigner',
+                              icon: Icons.draw_rounded,
+                              onTap: () => context.push(
+                                AppRoutes.recommendationsWithCareer('Design'),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 9),
+                          Expanded(
+                            child: _TrendingCareerCard(
+                              title: 'AI/ML\nEngineer',
+                              icon: Icons.memory_rounded,
+                              onTap: () => context.push(
+                                AppRoutes.recommendationsWithCareer(
+                                  'Engineering',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    // 6. "Recommended for You" Header + Exact Bottom Banner Card
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Recommended for You',
+                              style: textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16.5,
+                                letterSpacing: -0.3,
+                                color: isDark
+                                    ? scheme.onSurface
+                                    : const Color(0xFF17122B),
+                              ),
+                            ),
+                          ),
+                          _ViewAllLink(
+                            onTap: () => context.push(AppRoutes.aiMentor),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: scheme.surface,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(
+                            color: scheme.outlineVariant.withAlpha(180),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.cardShadow(brightness),
+                              blurRadius: 16,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(17),
+                          child: CustomPaint(
+                            painter: _RecommendedBannerPainter(isDark: isDark),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                enableFeedback: false,
+                                onTap: () => context.push(personalizedRoute),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 11,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 72,
+                                        height: 52,
+                                        child: Image.asset(
+                                          'assets/images/home_books.png',
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (_, _, _) => Icon(
+                                            Icons.menu_book_rounded,
+                                            color: scheme.primary,
+                                            size: 32,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      width: 1,
-                                      height: 44,
-                                      color: isDark
-                                          ? Colors.white.withAlpha(32)
-                                          : const Color(0xFFDAD0F4),
-                                    ),
-                                    const SizedBox(width: 11),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Personalized Career Path',
-                                            style:
-                                                textTheme.titleSmall?.copyWith(
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 14.5,
-                                              letterSpacing: -0.2,
-                                              color: isDark
-                                                  ? scheme.onSurface
-                                                  : const Color(0xFF17122B),
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 3),
-                                          Text(
-                                            'Get a career roadmap based on\nyour interests and strengths.',
-                                            style:
-                                                textTheme.bodySmall?.copyWith(
-                                              color: isDark
-                                                  ? scheme.onSurfaceVariant
-                                                  : const Color(0xFF56506E),
-                                              fontSize: 12,
-                                              height: 1.32,
-                                            ),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        width: 1,
+                                        height: 44,
+                                        color: isDark
+                                            ? Colors.white.withAlpha(32)
+                                            : const Color(0xFFDAD0F4),
                                       ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Container(
-                                      width: 42,
-                                      height: 42,
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Color(0xFF8C4DF0),
-                                            Color(0xFF6629CC),
+                                      const SizedBox(width: 11),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Personalized Career Path',
+                                              style: textTheme.titleSmall
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 14.5,
+                                                    letterSpacing: -0.2,
+                                                    color: isDark
+                                                        ? scheme.onSurface
+                                                        : const Color(
+                                                            0xFF17122B,
+                                                          ),
+                                                  ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Text(
+                                              'Get a career roadmap based on\nyour interests and strengths.',
+                                              style: textTheme.bodySmall
+                                                  ?.copyWith(
+                                                    color: isDark
+                                                        ? scheme
+                                                              .onSurfaceVariant
+                                                        : const Color(
+                                                            0xFF56506E,
+                                                          ),
+                                                    fontSize: 12,
+                                                    height: 1.32,
+                                                  ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ],
                                         ),
-                                        borderRadius: BorderRadius.circular(13),
                                       ),
-                                      child: const Icon(
-                                        Icons.arrow_forward_rounded,
-                                        color: Colors.white,
-                                        size: 20,
+                                      const SizedBox(width: 10),
+                                      Container(
+                                        width: 42,
+                                        height: 42,
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Color(0xFF8C4DF0),
+                                              Color(0xFF6629CC),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            13,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -703,13 +718,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -989,11 +1003,7 @@ class _ExploreBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
 
@@ -1033,22 +1043,8 @@ class _SignpostBackdropPainter extends CustomPainter {
 
     final blob = Path()
       ..moveTo(w * 0.10, h)
-      ..cubicTo(
-        w * 0.04,
-        h * 0.56,
-        w * 0.24,
-        h * 0.24,
-        w * 0.58,
-        h * 0.24,
-      )
-      ..cubicTo(
-        w * 0.90,
-        h * 0.24,
-        w * 1.02,
-        h * 0.52,
-        w * 0.94,
-        h,
-      )
+      ..cubicTo(w * 0.04, h * 0.56, w * 0.24, h * 0.24, w * 0.58, h * 0.24)
+      ..cubicTo(w * 0.90, h * 0.24, w * 1.02, h * 0.52, w * 0.94, h)
       ..close();
     canvas.drawPath(
       blob,
@@ -1142,7 +1138,13 @@ class _ExploreSignpostPainter extends CustomPainter {
     // Left foliage cluster
     drawLeaf(Offset(w * 0.25, h * 0.96), -0.78, h * 0.24, w * 0.045, leftSprig);
     drawLeaf(Offset(w * 0.28, h * 0.96), -0.45, h * 0.30, w * 0.048, leftSprig);
-    drawLeaf(Offset(w * 0.32, h * 0.96), -0.15, h * 0.22, w * 0.040, rightSprig);
+    drawLeaf(
+      Offset(w * 0.32, h * 0.96),
+      -0.15,
+      h * 0.22,
+      w * 0.040,
+      rightSprig,
+    );
 
     // Right foliage cluster
     drawLeaf(Offset(w * 0.72, h * 0.96), 0.32, h * 0.28, w * 0.046, rightSprig);

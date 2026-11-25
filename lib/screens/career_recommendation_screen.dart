@@ -90,18 +90,20 @@ class _CareerRecommendationScreenState
         _expandedKey ?? (sorted.isNotEmpty ? sorted.first.key : null);
 
     final q = _query.trim().toLowerCase();
-    final filtered = sorted.where((entry) {
-      if (_selectedFilter != 'All' && entry.key != _selectedFilter) {
-        return false;
-      }
-      if (q.isEmpty) return true;
-      final info = ScoringService.careerCatalog[entry.key]!;
-      return info.title.toLowerCase().contains(q) ||
-          info.key.toLowerCase().contains(q) ||
-          info.shortDescription.toLowerCase().contains(q) ||
-          info.skills.any((s) => s.toLowerCase().contains(q)) ||
-          info.vibeTags.any((v) => v.toLowerCase().contains(q));
-    }).toList(growable: false);
+    final filtered = sorted
+        .where((entry) {
+          if (_selectedFilter != 'All' && entry.key != _selectedFilter) {
+            return false;
+          }
+          if (q.isEmpty) return true;
+          final info = ScoringService.careerCatalog[entry.key]!;
+          return info.title.toLowerCase().contains(q) ||
+              info.key.toLowerCase().contains(q) ||
+              info.shortDescription.toLowerCase().contains(q) ||
+              info.skills.any((s) => s.toLowerCase().contains(q)) ||
+              info.vibeTags.any((v) => v.toLowerCase().contains(q));
+        })
+        .toList(growable: false);
 
     final filters = ['All', ...ScoringService.careerCategories];
 
@@ -109,9 +111,7 @@ class _CareerRecommendationScreenState
       body: Stack(
         children: [
           Positioned.fill(
-            child: CustomPaint(
-              painter: _CareerBackdropPainter(isDark: isDark),
-            ),
+            child: CustomPaint(painter: _CareerBackdropPainter(isDark: isDark)),
           ),
           SafeArea(
             child: Column(
@@ -321,7 +321,8 @@ class _CareerRecommendationScreenState
                           clipBehavior: Clip.antiAlias,
                           child: InkWell(
                             enableFeedback: false,
-                            onTap: () => setState(() => _selectedFilter = 'All'),
+                            onTap: () =>
+                                setState(() => _selectedFilter = 'All'),
                             child: SizedBox(
                               width: 34,
                               height: 34,
@@ -512,10 +513,7 @@ class _CareerRecommendationScreenState
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFF5D26C6),
-                                Color(0xFF8344E4),
-                              ],
+                              colors: [Color(0xFF5D26C6), Color(0xFF8344E4)],
                             ),
                           ),
                           child: Material(
@@ -861,7 +859,9 @@ class _ReferenceCareerCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: Text(isSaved ? 'Path Saved' : 'Save This Path'),
+                          child: Text(
+                            isSaved ? 'Path Saved' : 'Save This Path',
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -975,11 +975,7 @@ class _CareerBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
 

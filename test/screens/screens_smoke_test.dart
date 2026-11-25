@@ -15,6 +15,10 @@ void main() {
     String route, {
     AppDependencies? existingDeps,
   }) async {
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     final deps = existingDeps ?? AppDependencies.create();
     if (!deps.themeProvider.isLoaded) {
       await tester.runAsync(deps.loadAll);
@@ -30,7 +34,7 @@ void main() {
     return deps;
   }
 
-  group('End-to-end widget verification across all 16 routes', () {
+  group('End-to-end widget verification across all 19 routes', () {
     testWidgets(
       'Quiz -> validation -> submit -> Recommendations -> Save Path -> Results',
       (WidgetTester tester) async {
@@ -76,14 +80,23 @@ void main() {
         await tester.tap(find.text('Submit'));
         await tester.pumpAndSettle();
 
-        // Should land on Career Recommendations with Engineering top match
-        expect(find.text('Career Recommendations'), findsOneWidget);
+        // Should land on Career Paths with Engineering top match
+        expect(find.text('Career Paths'), findsOneWidget);
         expect(find.text('Your top match: Engineering'), findsOneWidget);
         expect(deps.quizProvider.progress.points, 100);
 
         // Save career path -> +50 XP once
+        final verticalList = find.byWidgetPredicate(
+          (w) => w is Scrollable && w.axisDirection == AxisDirection.down,
+        );
         final saveBtn = find.text('Save This Path');
+        await tester.scrollUntilVisible(
+          saveBtn,
+          200,
+          scrollable: verticalList.first,
+        );
         await tester.ensureVisible(saveBtn);
+        await tester.pumpAndSettle();
         await tester.tap(saveBtn);
         await tester.pumpAndSettle();
         expect(find.text('Path Saved'), findsOneWidget);
@@ -94,7 +107,10 @@ void main() {
         await tester.pumpAndSettle();
 
         // Navigate to Score Breakdown (Results)
-        await tester.tap(find.text('Score Breakdown'));
+        final scoreBtn = find.text('Score Breakdown');
+        await tester.ensureVisible(scoreBtn);
+        await tester.pumpAndSettle();
+        await tester.tap(scoreBtn);
         await tester.pumpAndSettle();
         expect(find.text('Quiz Results'), findsOneWidget);
         expect(find.text('Top match: Engineering'), findsOneWidget);
@@ -138,6 +154,11 @@ void main() {
         expect(
           find.text('Indian Institute of Technology Bombay'),
           findsWidgets,
+        );
+        await tester.scrollUntilVisible(
+          find.text('Visit Website / Apply'),
+          250,
+          scrollable: find.byType(Scrollable).first,
         );
         expect(find.text('Visit Website / Apply'), findsOneWidget);
 
@@ -237,5 +258,24 @@ void main() {
         deps.dispose();
       },
     );
+
+    testWidgets('Welcome and Explore screens render cleanly', (
+      WidgetTester tester,
+    ) async {
+      final deps = await pumpRoute(tester, AppRoutes.welcome);
+      expect(find.text('Get Started'), findsOneWidget);
+
+      await pumpRoute(tester, AppRoutes.explore, existingDeps: deps);
+      expect(find.text('Trending Careers'), findsOneWidget);
+      expect(find.byType(TextField), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'IIT');
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Indian Institute of Technology Bombay'),
+        findsOneWidget,
+      );
+
+      deps.dispose();
+    });
   });
 }

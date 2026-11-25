@@ -72,9 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           // Base soft lavender-white backdrop + organic upper-right curve
           Positioned.fill(
-            child: CustomPaint(
-              painter: _SplashBackdropPainter(isDark: isDark),
-            ),
+            child: CustomPaint(painter: _SplashBackdropPainter(isDark: isDark)),
           ),
 
           // Lower panoramic student mountain sunrise scene seamlessly blended into top/bottom lavender
@@ -105,10 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 AppColors.darkBackground,
                                 AppColors.darkBackground.withAlpha(0),
                               ]
-                            : const [
-                                Color(0xFFF6F2FF),
-                                Color(0x00F6F2FF),
-                              ],
+                            : const [Color(0xFFF6F2FF), Color(0x00F6F2FF)],
                       ),
                     ),
                   ),
@@ -127,10 +122,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 AppColors.darkBackground,
                                 AppColors.darkBackground.withAlpha(0),
                               ]
-                            : const [
-                                Color(0xFFF3ECFF),
-                                Color(0x00F3ECFF),
-                              ],
+                            : const [Color(0xFFF3ECFF), Color(0x00F3ECFF)],
                       ),
                     ),
                   ),
@@ -155,9 +147,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.sizeOf(context).height * 0.10),
-                const Center(
-                  child: CareerGuideEmblem(width: 118, height: 96),
-                ),
+                const Center(child: CareerGuideEmblem(width: 118, height: 96)),
                 const SizedBox(height: 10),
                 RichText(
                   text: TextSpan(
@@ -257,14 +247,8 @@ class _SplashBackdropPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isDark
-              ? const [
-                  AppColors.darkBackgroundTop,
-                  AppColors.darkBackground,
-                ]
-              : const [
-                  Color(0xFFF6F2FF),
-                  Color(0xFFF3ECFF),
-                ],
+              ? const [AppColors.darkBackgroundTop, AppColors.darkBackground]
+              : const [Color(0xFFF6F2FF), Color(0xFFF3ECFF)],
         ).createShader(rect),
     );
 
@@ -324,10 +308,7 @@ class _SplashBottomMistPainter extends CustomPainter {
                   AppColors.darkBackground.withAlpha(235),
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xF5F6F2FF),
-                  Color(0xFFF1E9FF),
-                ],
+              : const [Color(0xF5F6F2FF), Color(0xFFF1E9FF)],
         ).createShader(Offset.zero & size),
     );
   }
@@ -338,10 +319,7 @@ class _SplashBottomMistPainter extends CustomPainter {
 }
 
 class _GradientRingPainter extends CustomPainter {
-  const _GradientRingPainter({
-    required this.color,
-    required this.trackColor,
-  });
+  const _GradientRingPainter({required this.color, required this.trackColor});
 
   final Color color;
   final Color trackColor;

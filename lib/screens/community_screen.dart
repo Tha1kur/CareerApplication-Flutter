@@ -502,8 +502,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       ? EmptyStateView(
                           icon: Icons.forum_outlined,
                           title: 'No questions found',
-                          subtitle:
-                              'Try a different topic or start a new discussion locally.',
+                          subtitle: 'Try a different topic or start a new discussion locally.',
                           actionLabel: 'Ask a Question',
                           onAction: () => _showAskDialog(context),
                         )
@@ -684,37 +683,40 @@ class _QuestionCardState extends State<_QuestionCard> {
           ],
           Divider(height: 22, color: scheme.outlineVariant.withAlpha(140)),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Wrap(
-                spacing: 8,
-                children: [
-                  ActionChip(
-                    avatar: Icon(
-                      Icons.thumb_up_rounded,
-                      size: 15,
-                      color: widget.isUpvoted
-                          ? scheme.primary
-                          : scheme.onSurfaceVariant,
+              Expanded(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: [
+                    ActionChip(
+                      avatar: Icon(
+                        Icons.thumb_up_rounded,
+                        size: 15,
+                        color: widget.isUpvoted
+                            ? scheme.primary
+                            : scheme.onSurfaceVariant,
+                      ),
+                      label: Text('${widget.upvoteCount}'),
+                      backgroundColor: widget.isUpvoted
+                          ? scheme.primaryContainer
+                          : scheme.surfaceContainerHighest,
+                      onPressed: widget.onToggleUpvote,
                     ),
-                    label: Text('${widget.upvoteCount}'),
-                    backgroundColor: widget.isUpvoted
-                        ? scheme.primaryContainer
-                        : scheme.surfaceContainerHighest,
-                    onPressed: widget.onToggleUpvote,
-                  ),
-                  ActionChip(
-                    avatar: const Icon(
-                      Icons.chat_bubble_outline_rounded,
-                      size: 15,
+                    ActionChip(
+                      avatar: const Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        size: 15,
+                      ),
+                      label: Text(
+                        '${q.answers.length} ${q.answers.length == 1 ? 'Answer' : 'Answers'}',
+                      ),
+                      onPressed: () => setState(() => _expanded = !_expanded),
                     ),
-                    label: Text(
-                      '${q.answers.length} ${q.answers.length == 1 ? 'Answer' : 'Answers'}',
-                    ),
-                    onPressed: () => setState(() => _expanded = !_expanded),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 4),
               TextButton(
                 onPressed: widget.onAnswer,
                 child: const Text(
@@ -825,11 +827,7 @@ class _CommunityBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

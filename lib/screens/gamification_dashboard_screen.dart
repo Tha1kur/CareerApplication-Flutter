@@ -181,9 +181,8 @@ class _GamificationDashboardScreenState
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF6B2FD0).withAlpha(
-                            isDark ? 70 : 58,
-                          ),
+                          color: const Color(0xFF6B2FD0)
+                              .withAlpha(isDark ? 70 : 58),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
@@ -236,9 +235,10 @@ class _GamificationDashboardScreenState
                                   value: levelInfo.progressFraction,
                                   minHeight: 7,
                                   backgroundColor: Colors.white.withAlpha(60),
-                                  valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Color(0xFFEBCFFF),
-                                  ),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        Color(0xFFEBCFFF),
+                                      ),
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -296,27 +296,50 @@ class _GamificationDashboardScreenState
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Badges',
-                        style: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
+                      Expanded(
+                        child: Text(
+                          'Badges',
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Wrap(
-                        spacing: 4,
-                        children: [
-                          TextButton(
-                            onPressed: () => context.push(AppRoutes.colleges),
-                            child: const Text('Colleges'),
+                      Flexible(
+                        flex: 2,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Wrap(
+                            spacing: 2,
+                            alignment: WrapAlignment.end,
+                            children: [
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  minimumSize: const Size(0, 36),
+                                ),
+                                onPressed: () =>
+                                    context.push(AppRoutes.colleges),
+                                child: const Text('Colleges'),
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  minimumSize: const Size(0, 36),
+                                ),
+                                onPressed: () =>
+                                    context.push(AppRoutes.scholarships),
+                                child: const Text('Scholarships'),
+                              ),
+                            ],
                           ),
-                          TextButton(
-                            onPressed: () =>
-                                context.push(AppRoutes.scholarships),
-                            child: const Text('Scholarships'),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -679,11 +702,7 @@ class _DashboardBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

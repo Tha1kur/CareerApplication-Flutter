@@ -263,8 +263,7 @@ class SettingsScreen extends StatelessWidget {
                             onPressed: () => _confirmAndRun(
                               context,
                               title: 'Reset Gamification?',
-                              message:
-                                  'This resets your XP, level, earned badges, and reward milestones. Your quiz answers, scores, and profile remain intact.',
+                              message: 'This resets your XP, level, earned badges, and reward milestones. Your quiz answers, scores, and profile remain intact.',
                               confirmLabel: 'Reset XP',
                               action: quizProvider.resetGamificationProgress,
                               successMessage: 'Gamification progress reset',
@@ -280,8 +279,7 @@ class SettingsScreen extends StatelessWidget {
                             onPressed: () => _confirmAndRun(
                               context,
                               title: 'Reset Quiz, Scores & XP?',
-                              message:
-                                  'This clears your quiz draft, submitted answers, scores, attempt history, saved career path, and XP progress.',
+                              message: 'This clears your quiz draft, submitted answers, scores, attempt history, saved career path, and XP progress.',
                               confirmLabel: 'Reset All',
                               action: quizProvider.resetAllQuizAndProgress,
                               successMessage: 'All quiz data reset',
@@ -297,8 +295,7 @@ class SettingsScreen extends StatelessWidget {
                             onPressed: () => _confirmAndRun(
                               context,
                               title: 'Clear Profile?',
-                              message:
-                                  'This removes your saved name, age, career goal, and custom profile photo from this device.',
+                              message: 'This removes your saved name, age, career goal, and custom profile photo from this device.',
                               confirmLabel: 'Clear Profile',
                               action: profileProvider.clearProfile,
                               successMessage: 'Profile cleared',
@@ -360,11 +357,7 @@ class _SettingsBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

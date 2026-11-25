@@ -13,12 +13,7 @@ class Profile {
 
   bool get isEmpty => name.trim().isEmpty && age <= 0 && goal.trim().isEmpty;
 
-  Profile copyWith({
-    String? name,
-    int? age,
-    String? goal,
-    String? avatarPath,
-  }) {
+  Profile copyWith({String? name, int? age, String? goal, String? avatarPath}) {
     return Profile(
       name: name ?? this.name,
       age: age ?? this.age,
@@ -37,11 +32,6 @@ class Profile {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'age': age,
-      'goal': goal,
-      'avatarPath': avatarPath,
-    };
+    return {'name': name, 'age': age, 'goal': goal, 'avatarPath': avatarPath};
   }
 }

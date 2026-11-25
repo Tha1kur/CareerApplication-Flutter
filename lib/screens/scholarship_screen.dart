@@ -336,8 +336,7 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                       ? EmptyStateView(
                           icon: Icons.search_off_rounded,
                           title: 'No scholarships match your filters',
-                          subtitle:
-                              'Try switching the category or clearing the search term.',
+                          subtitle: 'Try switching the category or clearing the search term.',
                           actionLabel: 'Reset Filters',
                           onAction: () {
                             _searchController.clear();
@@ -364,7 +363,9 @@ class _ScholarshipScreenState extends State<ScholarshipScreen> {
                               ),
                               onTrack: () async {
                                 if (isTracked) {
-                                  context.push(AppRoutes.applicationTracker);
+                                  unawaited(
+                                    context.push(AppRoutes.applicationTracker),
+                                  );
                                   return;
                                 }
                                 await tracker.trackScholarship(item);
@@ -748,11 +749,7 @@ class _ScholarshipsBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

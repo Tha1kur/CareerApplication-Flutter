@@ -165,8 +165,9 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final activeColor = isDark ? scheme.primary : const Color(0xFF7433D6);
-    final inactiveColor =
-        isDark ? scheme.onSurfaceVariant : const Color(0xFF3E3856);
+    final inactiveColor = isDark
+        ? scheme.onSurfaceVariant
+        : const Color(0xFF3E3856);
     final fg = selected ? activeColor : inactiveColor;
 
     return Expanded(
@@ -186,7 +187,11 @@ class _NavItem extends StatelessWidget {
                 scale: selected ? 1.06 : 1.0,
                 duration: const Duration(milliseconds: 220),
                 curve: Curves.easeOutCubic,
-                child: Icon(selected ? selectedIcon : icon, size: 24, color: fg),
+                child: Icon(
+                  selected ? selectedIcon : icon,
+                  size: 24,
+                  color: fg,
+                ),
               ),
               const SizedBox(height: 3),
               AnimatedDefaultTextStyle(

@@ -151,9 +151,8 @@ class ApplicationTrackerScreen extends StatelessWidget {
             children: [
               Text(
                 item.scholarshipName,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                style: Theme.of(context).textTheme.titleSmall
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 10),
               TextField(
@@ -335,8 +334,7 @@ class ApplicationTrackerScreen extends StatelessWidget {
                       ? EmptyStateView(
                           icon: Icons.assignment_turned_in_rounded,
                           title: 'No Tracked Applications Yet',
-                          subtitle:
-                              'Track scholarship deadlines, document readiness, and notes locally across 4 stages.',
+                          subtitle: 'Track scholarship deadlines, document readiness, and notes locally across 4 stages.',
                           actionLabel: savedScholarships.isNotEmpty
                               ? 'Import Saved (${savedScholarships.length})'
                               : 'Add From Catalog',
@@ -361,8 +359,7 @@ class ApplicationTrackerScreen extends StatelessWidget {
                       ? const EmptyStateView(
                           icon: Icons.filter_list_off_rounded,
                           title: 'No applications in this stage',
-                          subtitle:
-                              'Switch the stage filter above or update an application stage.',
+                          subtitle: 'Switch the stage filter above or update an application stage.',
                         )
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(14, 8, 14, 88),
@@ -399,7 +396,8 @@ class ApplicationTrackerScreen extends StatelessWidget {
                               onToggleDocument: (doc) => unawaited(
                                 tracker.toggleDocument(item.scholarshipId, doc),
                               ),
-                              onEditNotes: () => _showNotesDialog(context, item),
+                              onEditNotes: () =>
+                                  _showNotesDialog(context, item),
                               onUntrack: () => unawaited(
                                 tracker.untrackScholarship(item.scholarshipId),
                               ),
@@ -564,9 +562,7 @@ class _TrackedScholarshipCardState extends State<_TrackedScholarshipCard> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFF231C42)
-                  : const Color(0xFFF6F2FF),
+              color: isDark ? const Color(0xFF231C42) : const Color(0xFFF6F2FF),
               borderRadius: BorderRadius.circular(9),
             ),
             child: Text(
@@ -605,14 +601,18 @@ class _TrackedScholarshipCardState extends State<_TrackedScholarshipCard> {
             onTap: () =>
                 setState(() => _expandedChecklist = !_expandedChecklist),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Document Checklist (${item.completedStandardDocsCount}/${kStandardRequiredDocuments.length})',
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
+                Expanded(
+                  child: Text(
+                    'Document Checklist (${item.completedStandardDocsCount}/${kStandardRequiredDocuments.length})',
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                const SizedBox(width: 8),
                 Text(
                   _expandedChecklist ? 'Hide' : 'Manage',
                   style: TextStyle(
@@ -735,11 +735,7 @@ class _TrackerBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

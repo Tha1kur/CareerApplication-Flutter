@@ -1,4 +1,4 @@
-# Test & Verification Results
+# Test & Build Verification Results
 
 **Date:** 25 November 2026  
 **Toolchain:** Flutter `3.50.1` (stable), Dart `3.14.0`, Android SDK `36.1.0`, OpenJDK `25.0.4` (Android Studio JBR)
@@ -7,13 +7,15 @@
 
 | Target | Command | Result |
 |---|---|---|
-| Kotlin baseline + P1 fixes | `JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" ./gradlew testDebugUnitTest assembleDebug --console=plain` | **PASS** — `BUILD SUCCESSFUL in 5s`, **37/37 unit tests passed**, debug APK built (`18 MB`) |
-| Flutter formatting | `dart format .` | **PASS** — 53 files formatted, 0 remaining diffs |
-| Flutter static analysis | `flutter analyze` | **PASS** — **No issues found** (`2.4s`) |
-| Flutter unit + widget tests | `flutter test --reporter expanded` | **PASS** — **35/35 tests passed** (`5s`), covering JSON assets, exact Kotlin scoring parity, level boundaries, AI Mentor 5-category plans & fallbacks, draft/submit/history persistence, P1 atomic XP deduplication, search/filter restore, 3-college comparison cap, tracker lifecycle/checklist/notes, community seed/post/answer/upvote, corrupt JSON resilience, and end-to-end widget verification across all 16 routes |
-| Flutter Phase 2 debug APK | `flutter build apk --debug` | **PASS** (verified in Phase 2: `app-debug.apk`, `156 MB`; `build/` later cleared to reclaim `2.1 GB` SSD space before Phase 4–5 tests) |
+| Kotlin baseline + P1 fixes | `JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home" ./gradlew testDebugUnitTest assembleDebug --console=plain` | **PASS** — `BUILD SUCCESSFUL in 5s`, **37/37 unit tests passed**, debug APK built (`18 MB`); P1 fixes pushed cleanly to `Tha1kur/CareerApplication` (`9bc48cd`) |
+| Flutter formatting | `dart format .` | **PASS** — 61 files formatted, **0 remaining diffs** (`0.53s`) |
+| Flutter static analysis | `flutter analyze` | **PASS** — **No issues found** (`1.3s`) |
+| Flutter unit + widget tests | `flutter test --reporter expanded` | **PASS** — **36/36 tests passed** (`2s`), covering bundled JSON assets, exact Kotlin scoring parity, level boundaries, AI Mentor 5-category plans & fallbacks, draft/submit/history persistence, P1 atomic XP deduplication, search/filter restore, 3-college comparison cap, tracker lifecycle/checklist/notes, community seed/post/answer/upvote, corrupt JSON resilience, and end-to-end widget verification across all 19 routes at `412×915` phone viewport with zero `RenderFlex` overflows |
+| Flutter Android Release APK | `flutter build apk --release --no-tree-shake-icons` | **PASS** — Built `build/app/outputs/flutter-apk/app-release.apk` (`56.0 MB` / `53M` on disk, `51.6s`) |
 
-## Pending / Deferred Until Phase 6–8
-- **UI/UX Visual Modernization (Phase 6):** Waiting for user-supplied reference screenshots before applying final visual polish across all 16 screens.
-- **Post-Phase-5 Debug/Release APK Build & Physical Phone Smoke Test (Phases 7–8):** Deferred until after Phase 6 UI polish and freeing additional disk space on macOS (currently `~2.3 GB` available; `~/Library/Caches/Homebrew` holds `2.2 GB` of cached installers).
-- **Emulator Launch:** Intentionally skipped per user preference during headless verification phases.
+## Build Note
+- On this macOS Homebrew Flutter `3.50.1` environment, `font-subset` exited with `-9` (`SIGKILL`) during default icon tree-shaking, so release APK verification was run with `--no-tree-shake-icons` as recommended by Flutter's build output.
+
+## Additional Verification Notes
+- **Emulator Launch:** Intentionally skipped per user preference during headless verification; user visually reviewed and approved all 19 screens on device/emulator during Phase 6.
+- **Unverified Locally in Headless Mode:** Camera/gallery OS picker dialog (requires live Android device/emulator; gracefully guarded with try/catch fallback in `ProfileScreen`) and external browser launch via `url_launcher`.

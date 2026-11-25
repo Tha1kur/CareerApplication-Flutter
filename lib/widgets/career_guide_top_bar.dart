@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
@@ -76,6 +75,7 @@ class CareerGuideTopBar extends StatelessWidget {
 
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       backgroundColor: scheme.surface,
       shape: const RoundedRectangleBorder(
@@ -218,8 +218,14 @@ class CareerGuideTopBar extends StatelessWidget {
             ),
             const SizedBox(width: 10),
           ],
-          const CareerGuideLogo(),
-          const Spacer(),
+          const Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: CareerGuideLogo(),
+            ),
+          ),
+          const SizedBox(width: 8),
           // Exact Reference Notification Bell Circle with crisp red badge dot
           _CircleHeaderButton(
             tooltip: 'Notifications',
@@ -280,8 +286,9 @@ class CareerGuideTopBar extends StatelessWidget {
                     )
                   : CustomPaint(
                       painter: _ProfileSilhouettePainter(
-                        color:
-                            isDark ? scheme.primary : const Color(0xFF7B3CE0),
+                        color: isDark
+                            ? scheme.primary
+                            : const Color(0xFF7B3CE0),
                       ),
                     ),
             ),

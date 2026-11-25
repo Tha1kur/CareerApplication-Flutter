@@ -121,10 +121,7 @@ class _CollegesScreenState extends State<CollegesScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
                           gradient: const LinearGradient(
-                            colors: [
-                              Color(0xFF5D26C6),
-                              Color(0xFF8344E4),
-                            ],
+                            colors: [Color(0xFF5D26C6), Color(0xFF8344E4)],
                           ),
                         ),
                         child: Material(
@@ -437,8 +434,7 @@ class _CollegesScreenState extends State<CollegesScreen> {
                       ? EmptyStateView(
                           icon: Icons.search_off_rounded,
                           title: 'No colleges match your filters',
-                          subtitle:
-                              'Try changing the stream filter or clearing your search query.',
+                          subtitle: 'Try changing the stream filter or clearing your search query.',
                           actionLabel: 'Reset Filters',
                           onAction: () {
                             _searchController.clear();
@@ -557,7 +553,6 @@ class _ReferenceCollegeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Reference-style Institute Crest / Monogram Badge
                     Container(
@@ -854,11 +849,7 @@ class _CollegesBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
   }

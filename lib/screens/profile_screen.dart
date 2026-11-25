@@ -31,6 +31,7 @@ class ProfileScreen extends StatelessWidget {
     final profileProvider = context.read<ProfileProvider>();
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       isScrollControlled: true,
       showDragHandle: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -74,6 +75,7 @@ class ProfileScreen extends StatelessWidget {
 
     showModalBottomSheet<void>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       backgroundColor: scheme.surface,
       shape: const RoundedRectangleBorder(
@@ -196,8 +198,9 @@ class ProfileScreen extends StatelessWidget {
     final isDark = brightness == Brightness.dark;
     final textTheme = Theme.of(context).textTheme;
 
-    final displayName =
-        profile.name.trim().isNotEmpty ? profile.name.trim() : 'Student Explorer';
+    final displayName = profile.name.trim().isNotEmpty
+        ? profile.name.trim()
+        : 'Student Explorer';
     final goalText = profile.goal.trim().isNotEmpty
         ? profile.goal.trim()
         : 'Set your dream career goal';
@@ -338,15 +341,13 @@ class ProfileScreen extends StatelessWidget {
                                                     fit: BoxFit.cover,
                                                     errorBuilder: (_, _, _) =>
                                                         CustomPaint(
-                                                          painter:
-                                                              _DefaultAvatarPainter(
-                                                                color: isDark
-                                                                    ? scheme
-                                                                          .primary
-                                                                    : const Color(
-                                                                        0xFF7B3CE0,
-                                                                      ),
-                                                              ),
+                                                          painter: _DefaultAvatarPainter(
+                                                            color: isDark
+                                                                ? scheme.primary
+                                                                : const Color(
+                                                                    0xFF7B3CE0,
+                                                                  ),
+                                                          ),
                                                         ),
                                                   )
                                                 : CustomPaint(
@@ -571,9 +572,8 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF6B2FD0).withAlpha(
-                              isDark ? 68 : 54,
-                            ),
+                            color: const Color(0xFF6B2FD0)
+                                .withAlpha(isDark ? 68 : 54),
                             blurRadius: 18,
                             offset: const Offset(0, 7),
                           ),
@@ -645,7 +645,9 @@ class ProfileScreen extends StatelessWidget {
                                   vertical: 8,
                                 ),
                                 child: Text(
-                                  savedCareerTitle.isNotEmpty ? 'View' : 'Start',
+                                  savedCareerTitle.isNotEmpty
+                                      ? 'View'
+                                      : 'Start',
                                   style: const TextStyle(
                                     color: Color(0xFF6729CC),
                                     fontSize: 12.5,
@@ -740,7 +742,8 @@ class ProfileScreen extends StatelessWidget {
                         _MenuEntry(
                           icon: Icons.forum_outlined,
                           title: 'Student & Mentor Q&A',
-                          subtitle: 'Browse local Q&A threads or ask a question',
+                          subtitle:
+                              'Browse local Q&A threads or ask a question',
                           onTap: () => context.push(AppRoutes.community),
                         ),
                         _MenuEntry(
@@ -1198,11 +1201,7 @@ class _ProfileBackdropPainter extends CustomPainter {
                   AppColors.darkBackground,
                   AppColors.darkBackground,
                 ]
-              : const [
-                  Color(0xFFF6F1FF),
-                  Color(0xFFF9F7FF),
-                  Color(0xFFF3EEFF),
-                ],
+              : const [Color(0xFFF6F1FF), Color(0xFFF9F7FF), Color(0xFFF3EEFF)],
         ).createShader(rect),
     );
 

@@ -54,6 +54,10 @@ void main() {
   testWidgets('Profile form validates name, saves, and clears', (
     WidgetTester tester,
   ) async {
+    tester.view.physicalSize = const Size(412, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     final deps = AppDependencies.create();
     await tester.runAsync(deps.loadAll);
 

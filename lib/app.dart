@@ -112,7 +112,8 @@ class _CareerGuidanceAppState extends State<CareerGuidanceApp> {
       unawaited(_deps.loadAll());
     }
     _router =
-        widget.router ?? createAppRouter(initialLocation: widget.initialLocation);
+        widget.router ??
+        createAppRouter(initialLocation: widget.initialLocation);
   }
 
   @override
