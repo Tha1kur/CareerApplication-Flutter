@@ -285,14 +285,14 @@ class _SmoothFadeBranchContainer extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         for (var i = 0; i < children.length; i++)
-          IgnorePointer(
-            ignoring: i != currentIndex,
-            child: TickerMode(
-              enabled: i == currentIndex,
-              child: AnimatedOpacity(
-                opacity: i == currentIndex ? 1.0 : 0.0,
-                duration: duration,
-                curve: Curves.easeOutCubic,
+          AnimatedOpacity(
+            opacity: i == currentIndex ? 1.0 : 0.0,
+            duration: duration,
+            curve: Curves.easeOutCubic,
+            child: IgnorePointer(
+              ignoring: i != currentIndex,
+              child: TickerMode(
+                enabled: i == currentIndex,
                 child: children[i],
               ),
             ),
