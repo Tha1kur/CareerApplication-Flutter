@@ -1,9 +1,13 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-/// Manages Light / Dark / System theme mode with local SharedPreferences persistence.
+import '../../services/local_storage_service.dart';
+
+/// Manages Light / Dark / System theme mode with local persistence via [LocalStorageService].
 class ThemeProvider extends ChangeNotifier {
-  static const String _themeModeKey = 'theme_mode';
+  ThemeProvider({LocalStorageService? storage})
+    : _storage = storage ?? LocalStorageService();
+
+  final LocalStorageService _storage;
 
   ThemeMode _themeMode = ThemeMode.system;
   bool _loaded = false;
@@ -18,8 +22,7 @@ class ThemeProvider extends ChangeNotifier {
   };
 
   Future<void> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final stored = prefs.getString(_themeModeKey) ?? 'system';
+    final stored = await _storage.loadThemeMode();
     _themeMode = _parseMode(stored);
     _loaded = true;
     notifyListeners();
@@ -29,8 +32,7 @@ class ThemeProvider extends ChangeNotifier {
     if (_themeMode == mode) return;
     _themeMode = mode;
     notifyListeners();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_themeModeKey, themeModeKey);
+    await _storage.saveThemeMode(themeModeKey);
   }
 
   static ThemeMode _parseMode(String value) {

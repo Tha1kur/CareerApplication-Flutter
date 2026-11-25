@@ -1,8 +1,7 @@
 import 'package:career_application_flutter/app.dart';
 import 'package:career_application_flutter/core/constants/app_routes.dart';
-import 'package:career_application_flutter/core/theme/theme_provider.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -13,12 +12,12 @@ void main() {
   testWidgets(
     'App launches cleanly with default System theme and switches theme',
     (WidgetTester tester) async {
-      final themeProvider = ThemeProvider();
-      await themeProvider.load();
+      final deps = AppDependencies.create();
+      await deps.loadAll();
 
-      expect(themeProvider.themeMode, ThemeMode.system);
+      expect(deps.themeProvider.themeMode, ThemeMode.system);
 
-      await tester.pumpWidget(CareerGuidanceApp(themeProvider: themeProvider));
+      await tester.pumpWidget(CareerGuidanceApp(dependencies: deps));
       await tester.pumpAndSettle();
 
       expect(find.text('Career Guidance Community'), findsWidgets);
@@ -27,7 +26,8 @@ void main() {
       await tester.tap(find.text('Dark'));
       await tester.pumpAndSettle();
 
-      expect(themeProvider.themeMode, ThemeMode.dark);
+      expect(deps.themeProvider.themeMode, ThemeMode.dark);
+      deps.dispose();
     },
   );
 

@@ -1,12 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'app.dart';
-import 'core/theme/theme_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final themeProvider = ThemeProvider();
-  await themeProvider.load();
+  final dependencies = AppDependencies.create();
+  await dependencies.loadAll();
 
-  runApp(CareerGuidanceApp(themeProvider: themeProvider));
+  runApp(CareerGuidanceApp(dependencies: dependencies));
 }
