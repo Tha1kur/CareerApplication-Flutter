@@ -85,6 +85,16 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.saved,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: SavedScreen(),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -157,14 +167,6 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
         pageBuilder: (context, state) => buildSharedAxisPage(
           key: state.pageKey,
           child: const ScholarshipScreen(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoutes.saved,
-        parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => buildSharedAxisPage(
-          key: state.pageKey,
-          child: const SavedScreen(),
         ),
       ),
       GoRoute(
@@ -253,7 +255,7 @@ class _RootTabShell extends StatelessWidget {
             case CareerGuideTab.explore:
               navigationShell.goBranch(1);
             case CareerGuideTab.saved:
-              context.push(AppRoutes.saved);
+              navigationShell.goBranch(2);
             case CareerGuideTab.profile:
               context.push(AppRoutes.profile);
           }
