@@ -6,10 +6,15 @@ import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 import '../core/constants/app_routes.dart';
+import '../core/router/app_navigation.dart';
+import '../core/theme/app_colors.dart';
 import '../models/user_progress.dart';
 import '../providers/quiz_gamification_provider.dart';
-import '../widgets/gradient_hero_card.dart';
 
+/// Cohesive CareerGuide Lavender & White Gamification Dashboard screen:
+/// - Secondary screen (no repeated brand top bar) starting with <- Dashboard
+/// - Rich violet Level & XP Hero Card with crisp circular ring + progress bar
+/// - 3 floating white stat cards, 3-column Badges grid (padding: EdgeInsets.zero), Recent Activity
 class GamificationDashboardScreen extends StatefulWidget {
   const GamificationDashboardScreen({super.key});
 
@@ -19,53 +24,8 @@ class GamificationDashboardScreen extends StatefulWidget {
 }
 
 class _GamificationDashboardScreenState
-    extends State<GamificationDashboardScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _confettiController;
-  final List<_ConfettiParticle> _particles = [];
+    extends State<GamificationDashboardScreen> {
   int? _lastKnownLevel;
-  int? _lastKnownBadgeCount;
-
-  @override
-  void initState() {
-    super.initState();
-    _confettiController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    );
-  }
-
-  @override
-  void dispose() {
-    _confettiController.dispose();
-    super.dispose();
-  }
-
-  void _triggerConfetti(ColorScheme scheme) {
-    final rng = math.Random();
-    final palette = [
-      scheme.primary,
-      scheme.secondary,
-      scheme.primaryContainer,
-      scheme.secondaryContainer,
-      scheme.tertiary,
-    ];
-    _particles
-      ..clear()
-      ..addAll(
-        List.generate(55, (_) {
-          final angle = rng.nextDouble() * math.pi * 2;
-          final speed = 120 + rng.nextDouble() * 240;
-          return _ConfettiParticle(
-            vx: math.cos(angle) * speed,
-            vy: math.sin(angle) * speed - 60,
-            radius: 3 + rng.nextDouble() * 4,
-            color: palette[rng.nextInt(palette.length)],
-          );
-        }),
-      );
-    unawaited(_confettiController.forward(from: 0));
-  }
 
   void _checkLevelUp(
     BuildContext context,
@@ -73,38 +33,31 @@ class _GamificationDashboardScreenState
     UserProgress progress,
   ) {
     final prevLevel = _lastKnownLevel;
-    final prevBadges = _lastKnownBadgeCount;
     _lastKnownLevel = levelInfo.level;
-    _lastKnownBadgeCount = progress.badges.length;
-
-    if (prevLevel == null || prevBadges == null) return;
-
-    final leveledUp = levelInfo.level > prevLevel;
-    final earnedBadge = progress.badges.length > prevBadges;
-    if (!leveledUp && !earnedBadge) return;
+    if (prevLevel == null || levelInfo.level <= prevLevel) return;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      _triggerConfetti(Theme.of(context).colorScheme);
-      if (leveledUp) {
-        unawaited(
-          showDialog<void>(
-            context: context,
-            builder: (dialogContext) => AlertDialog(
-              title: const Text('Level Up!'),
-              content: Text(
-                'You reached Level ${levelInfo.level} with ${progress.points} XP total.',
-              ),
-              actions: [
-                FilledButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Nice!'),
-                ),
-              ],
+      unawaited(
+        showDialog<void>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
             ),
+            title: const Text('Level Up!'),
+            content: Text(
+              'You reached Level ${levelInfo.level} with ${progress.points} XP total.',
+            ),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('Nice!'),
+              ),
+            ],
           ),
-        );
-      }
+        ),
+      );
     });
   }
 
@@ -115,6 +68,8 @@ class _GamificationDashboardScreenState
     final levelInfo = quizProvider.levelInfo;
     final savedCareerTitle = quizProvider.savedCareerTitle;
     final scheme = Theme.of(context).colorScheme;
+    final brightness = Theme.of(context).brightness;
+    final isDark = brightness == Brightness.dark;
     final textTheme = Theme.of(context).textTheme;
 
     _checkLevelUp(context, levelInfo, progress);
@@ -124,163 +79,299 @@ class _GamificationDashboardScreenState
         : progress.badges;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            ListView(
-              padding: const EdgeInsets.all(16),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _DashboardBackdropPainter(isDark: isDark),
+            ),
+          ),
+          SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.only(bottom: 24),
               children: [
-                // Gradient Level Hero
-                GradientHeroCard(
+                const SizedBox(height: 8),
+
+                // 1. Clean Secondary Top Row
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: Row(
                     children: [
+                      Material(
+                        color: Colors.transparent,
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          enableFeedback: false,
+                          onTap: () => context.safePop(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Icon(
+                              Icons.arrow_back_rounded,
+                              size: 22,
+                              color: isDark
+                                  ? scheme.primary
+                                  : const Color(0xFF5D26C6),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Your journey',
-                              style: textTheme.labelMedium?.copyWith(
-                                color: scheme.onPrimary.withAlpha(220),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Level ${levelInfo.level}',
-                              style: textTheme.headlineMedium?.copyWith(
-                                color: scheme.onPrimary,
-                                fontWeight: FontWeight.w700,
+                              'Dashboard',
+                              style: textTheme.headlineSmall?.copyWith(
+                                fontSize: 22.5,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -0.5,
+                                color: isDark
+                                    ? scheme.onSurface
+                                    : const Color(0xFF17122B),
                               ),
                             ),
                             Text(
-                              '${progress.points} XP total',
-                              style: textTheme.bodyMedium?.copyWith(
-                                color: scheme.onPrimary.withAlpha(235),
-                              ),
-                            ),
-                            if (savedCareerTitle.isNotEmpty) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                'Saved path: $savedCareerTitle',
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: scheme.onPrimary.withAlpha(245),
-                                ),
-                              ),
-                            ],
-                            const SizedBox(height: 12),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: LinearProgressIndicator(
-                                value: levelInfo.progressFraction,
-                                minHeight: 7,
-                                backgroundColor: scheme.onPrimary.withAlpha(65),
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  scheme.secondary,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              '${levelInfo.currentXp}/${levelInfo.nextLevelXp} XP to next level',
-                              style: textTheme.labelSmall?.copyWith(
-                                color: scheme.onPrimary.withAlpha(225),
+                              'Track levels, XP milestones & earned badges.',
+                              style: textTheme.bodySmall?.copyWith(
+                                color: scheme.onSurfaceVariant,
+                                fontSize: 12.2,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 14),
-                      _LevelRing(levelInfo: levelInfo),
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? scheme.primaryContainer
+                              : const Color(0xFFF0E8FF),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.emoji_events_rounded,
+                          size: 22,
+                          color: isDark
+                              ? scheme.primary
+                              : const Color(0xFF6B2FD0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                // 2. Rich Violet Level & XP Hero Card
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFF5D26C6),
+                          Color(0xFF7E3EE2),
+                          Color(0xFF9757EE),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF6B2FD0).withAlpha(
+                            isDark ? 70 : 58,
+                          ),
+                          blurRadius: 20,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Your journey',
+                                style: TextStyle(
+                                  color: Colors.white.withAlpha(215),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Level ${levelInfo.level}',
+                                style: textTheme.headlineMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              Text(
+                                '${progress.points} XP total',
+                                style: TextStyle(
+                                  color: Colors.white.withAlpha(235),
+                                  fontSize: 13.8,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              if (savedCareerTitle.isNotEmpty) ...[
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Saved path: $savedCareerTitle',
+                                  style: TextStyle(
+                                    color: Colors.white.withAlpha(225),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                              const SizedBox(height: 12),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: LinearProgressIndicator(
+                                  value: levelInfo.progressFraction,
+                                  minHeight: 7,
+                                  backgroundColor: Colors.white.withAlpha(60),
+                                  valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Color(0xFFEBCFFF),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                '${levelInfo.currentXp}/${levelInfo.nextLevelXp} XP to next level',
+                                style: TextStyle(
+                                  color: Colors.white.withAlpha(220),
+                                  fontSize: 11.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        _LevelRing(levelInfo: levelInfo),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                // 3. Stats Row
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Points',
+                          value: '${progress.points}',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Badges',
+                          value: '${progress.badges.length}',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _StatCard(
+                          label: 'Milestones',
+                          value: '${progress.completedMilestonesCount}',
+                        ),
+                      ),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // Stats Row
-                Row(
-                  children: [
-                    Expanded(
-                      child: _StatCard(
-                        label: 'Points',
-                        value: '${progress.points}',
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _StatCard(
-                        label: 'Badges',
-                        value: '${progress.badges.length}',
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _StatCard(
-                        label: 'Milestones',
-                        value: '${progress.completedMilestonesCount}',
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 18),
-
-                // Badges header + quick actions
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Badges',
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Wrap(
-                      spacing: 4,
-                      children: [
-                        TextButton(
-                          onPressed: () => context.push(AppRoutes.colleges),
-                          child: const Text('Colleges'),
+                // 4. Badges Header + Quick Links
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Badges',
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
                         ),
-                        TextButton(
-                          onPressed: () => context.push(AppRoutes.scholarships),
-                          child: const Text('Scholarships'),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Wrap(
+                        spacing: 4,
+                        children: [
+                          TextButton(
+                            onPressed: () => context.push(AppRoutes.colleges),
+                            child: const Text('Colleges'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.scholarships),
+                            child: const Text('Scholarships'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 8),
 
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.92,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: GridView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.90,
+                        ),
+                    itemCount: badgesDisplay.length,
+                    itemBuilder: (context, index) =>
+                        _BadgeTile(name: badgesDisplay[index]),
                   ),
-                  itemCount: badgesDisplay.length,
-                  itemBuilder: (context, index) =>
-                      _BadgeTile(name: badgesDisplay[index]),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
 
-                // Recent Activity
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
+                // 5. Recent Activity White Card
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: scheme.surface,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(
+                        color: scheme.outlineVariant.withAlpha(175),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.cardShadow(brightness),
+                          blurRadius: 15,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           'Recent activity',
                           style: textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 15,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -313,27 +404,8 @@ class _GamificationDashboardScreenState
                 ),
               ],
             ),
-
-            // Confetti Canvas Overlay
-            IgnorePointer(
-              child: AnimatedBuilder(
-                animation: _confettiController,
-                builder: (context, _) {
-                  if (!_confettiController.isAnimating || _particles.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  return CustomPaint(
-                    size: Size.infinite,
-                    painter: _ConfettiPainter(
-                      particles: _particles,
-                      t: _confettiController.value,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -346,66 +418,47 @@ class _LevelRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
     return SizedBox(
-      width: 92,
-      height: 92,
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0, end: levelInfo.progressFraction),
-        duration: const Duration(milliseconds: 600),
-        builder: (context, animatedFraction, _) {
-          return CustomPaint(
-            painter: _LevelRingPainter(
-              progress: animatedFraction,
-              trackColor: scheme.onPrimary.withAlpha(60),
-              progressColor: scheme.secondary,
-              accentColor: scheme.onPrimary,
-            ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Lv ${levelInfo.level}',
-                    style: textTheme.titleSmall?.copyWith(
-                      color: scheme.onPrimary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    '${(levelInfo.progressFraction * 100).round()}%',
-                    style: textTheme.labelSmall?.copyWith(
-                      color: scheme.onPrimary.withAlpha(220),
-                    ),
-                  ),
-                ],
+      width: 82,
+      height: 82,
+      child: CustomPaint(
+        painter: _LevelRingPainter(progress: levelInfo.progressFraction),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Lv ${levelInfo.level}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
-          );
-        },
+              Text(
+                '${(levelInfo.progressFraction * 100).round()}%',
+                style: TextStyle(
+                  color: Colors.white.withAlpha(220),
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
 class _LevelRingPainter extends CustomPainter {
-  const _LevelRingPainter({
-    required this.progress,
-    required this.trackColor,
-    required this.progressColor,
-    required this.accentColor,
-  });
+  const _LevelRingPainter({required this.progress});
 
   final double progress;
-  final Color trackColor;
-  final Color progressColor;
-  final Color accentColor;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strokeWidth = size.shortestSide * 0.14;
+    const strokeWidth = 7.5;
     final rect = Rect.fromLTWH(
       strokeWidth / 2,
       strokeWidth / 2,
@@ -413,27 +466,30 @@ class _LevelRingPainter extends CustomPainter {
       size.height - strokeWidth,
     );
 
-    final bgPaint = Paint()
-      ..color = trackColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-
-    final fgPaint = Paint()
-      ..shader = SweepGradient(
-        colors: [progressColor, accentColor, progressColor],
-      ).createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawArc(rect, -math.pi / 2, math.pi * 2, false, bgPaint);
     canvas.drawArc(
       rect,
       -math.pi / 2,
-      math.pi * 2 * progress.clamp(0.0, 1.0),
+      math.pi * 2,
       false,
-      fgPaint,
+      Paint()
+        ..color = Colors.white.withAlpha(65)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth,
     );
+
+    if (progress > 0) {
+      canvas.drawArc(
+        rect,
+        -math.pi / 2,
+        math.pi * 2 * progress.clamp(0.0, 1.0),
+        false,
+        Paint()
+          ..color = const Color(0xFFEBCFFF)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round,
+      );
+    }
   }
 
   @override
@@ -450,28 +506,44 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: textTheme.labelMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
-              ),
+    final brightness = Theme.of(context).brightness;
+    final isDark = brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: scheme.outlineVariant.withAlpha(175)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.cardShadow(brightness),
+            blurRadius: 13,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.8,
+              color: scheme.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: isDark ? scheme.onSurface : const Color(0xFF17122B),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -486,6 +558,7 @@ class _BadgeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
+    final brightness = Theme.of(context).brightness;
     final isEmptyPlaceholder = name == 'No badges yet';
     final lower = name.toLowerCase();
 
@@ -497,55 +570,63 @@ class _BadgeTile extends StatelessWidget {
           )
         : lower.contains('quiz')
         ? (
-            const Color(0xFFE3F2FD),
+            const Color(0xFFEDE4FF),
             Icons.emoji_events_rounded,
-            const Color(0xFF1E88E5),
+            const Color(0xFF6B2FD0),
           )
         : lower.contains('college')
         ? (
             const Color(0xFFF3E5F5),
             Icons.school_rounded,
-            const Color(0xFF6A1B9A),
+            const Color(0xFF7433D6),
           )
         : lower.contains('scholar')
         ? (
-            const Color(0xFFFFF3E0),
-            Icons.emoji_events_rounded,
-            const Color(0xFFFF8F00),
+            const Color(0xFFFEF3C7),
+            Icons.workspace_premium_rounded,
+            const Color(0xFFD97706),
           )
         : (scheme.primaryContainer, Icons.verified_rounded, scheme.primary);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: bg,
-              child: Icon(icon, color: tint, size: 20),
-            ),
-            const SizedBox(height: 6),
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: scheme.outlineVariant.withAlpha(175)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.cardShadow(brightness),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: bg,
+            child: Icon(icon, color: tint, size: 20),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            name,
+            style: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (!isEmptyPlaceholder)
             Text(
-              name,
+              'Earned',
               style: textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.w600,
+                color: scheme.onSurfaceVariant,
+                fontSize: 10,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
-            if (!isEmptyPlaceholder)
-              Text(
-                'Earned',
-                style: textTheme.labelSmall?.copyWith(
-                  color: scheme.onSurfaceVariant,
-                  fontSize: 10,
-                ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -559,48 +640,55 @@ class _ActivityLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Text('• $text', style: Theme.of(context).textTheme.bodySmall),
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.check_circle_rounded,
+            size: 15,
+            color: AppColors.success,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(text, style: Theme.of(context).textTheme.bodySmall),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _ConfettiParticle {
-  const _ConfettiParticle({
-    required this.vx,
-    required this.vy,
-    required this.radius,
-    required this.color,
-  });
+class _DashboardBackdropPainter extends CustomPainter {
+  const _DashboardBackdropPainter({required this.isDark});
 
-  final double vx;
-  final double vy;
-  final double radius;
-  final Color color;
-}
-
-class _ConfettiPainter extends CustomPainter {
-  const _ConfettiPainter({required this.particles, required this.t});
-
-  final List<_ConfettiParticle> particles;
-  final double t;
+  final bool isDark;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final origin = Offset(size.width / 2, size.height * 0.12);
-    final elapsed = t * 1.4;
-    const gravity = 460.0;
-    final alpha = ((1 - t) * 255).round().clamp(0, 255);
-
-    for (final p in particles) {
-      final dx = origin.dx + p.vx * elapsed;
-      final dy = origin.dy + p.vy * elapsed + 0.5 * gravity * elapsed * elapsed;
-      final paint = Paint()..color = p.color.withAlpha(alpha);
-      canvas.drawCircle(Offset(dx, dy), p.radius, paint);
-    }
+    final rect = Offset.zero & size;
+    canvas.drawRect(
+      rect,
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.0, 0.35, 1.0],
+          colors: isDark
+              ? const [
+                  AppColors.darkBackgroundTop,
+                  AppColors.darkBackground,
+                  AppColors.darkBackground,
+                ]
+              : const [
+                  Color(0xFFF6F1FF),
+                  Color(0xFFF9F7FF),
+                  Color(0xFFF3EEFF),
+                ],
+        ).createShader(rect),
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _ConfettiPainter oldDelegate) =>
-      oldDelegate.t != t;
+  bool shouldRepaint(covariant _DashboardBackdropPainter oldDelegate) =>
+      oldDelegate.isDark != isDark;
 }
