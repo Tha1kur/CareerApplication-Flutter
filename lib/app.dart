@@ -92,7 +92,7 @@ class CareerGuidanceApp extends StatefulWidget {
 
 class _CareerGuidanceAppState extends State<CareerGuidanceApp> {
   late final AppDependencies _deps;
-  late final GoRouter _router;
+  late GoRouter _router;
   late final bool _ownsDeps;
 
   @override
@@ -104,6 +104,14 @@ class _CareerGuidanceAppState extends State<CareerGuidanceApp> {
       unawaited(_deps.loadAll());
     }
     _router = widget.router ?? createAppRouter();
+  }
+
+  @override
+  void didUpdateWidget(covariant CareerGuidanceApp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.router != null && widget.router != oldWidget.router) {
+      _router = widget.router!;
+    }
   }
 
   @override
