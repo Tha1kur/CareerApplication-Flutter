@@ -21,10 +21,17 @@ void main() {
       await tester.pumpWidget(CareerGuidanceApp(dependencies: deps));
       await tester.pumpAndSettle();
 
-      expect(find.text('Career Guidance Community'), findsOneWidget);
-      expect(find.text('Find your best-fit career'), findsOneWidget);
+      expect(find.text('Your Career Progress'), findsOneWidget);
+      expect(find.text('Aptitude Quiz'), findsOneWidget);
+      expect(find.text('Career Paths'), findsOneWidget);
+      expect(find.text('Colleges'), findsOneWidget);
+      expect(find.text('Scholarships'), findsOneWidget);
+      expect(find.text('AI Career Mentor'), findsOneWidget);
+      expect(find.text('Continue Your Assessment'), findsOneWidget);
 
-      await tester.tap(find.byTooltip('Settings'));
+      await tester.tap(find.byTooltip('Notifications'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Settings'));
       await tester.pumpAndSettle();
 
       expect(find.text('Appearance'), findsOneWidget);

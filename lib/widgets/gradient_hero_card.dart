@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../core/theme/app_colors.dart';
+
 class GradientHeroCard extends StatelessWidget {
   const GradientHeroCard({
     super.key,
@@ -14,23 +16,25 @@ class GradientHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final brightness = Theme.of(context).brightness;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         gradient: LinearGradient(
           begin: horizontalGradient ? Alignment.centerLeft : Alignment.topLeft,
           end: horizontalGradient
               ? Alignment.centerRight
               : Alignment.bottomRight,
-          colors: [scheme.primary, scheme.primaryContainer],
+          colors: AppColors.primaryGradient(brightness),
         ),
         boxShadow: [
           BoxShadow(
-            color: scheme.primary.withAlpha(35),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: AppColors.lightPrimary.withAlpha(
+              brightness == Brightness.dark ? 65 : 52,
+            ),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),

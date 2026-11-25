@@ -49,6 +49,10 @@ void main() {
         );
         expect(find.text('Question 1 of 8'), findsOneWidget);
 
+        // Wait for floating validation SnackBar to dismiss before tapping Next
+        await tester.pump(const Duration(seconds: 5));
+        await tester.pumpAndSettle();
+
         // Answer all 8 questions cleanly
         final firstOptionLabels = [
           'Mathematics',
