@@ -65,6 +65,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.tap(find.text('Edit Profile'));
+    await tester.pumpAndSettle();
+
     final saveButton = find.text('Save');
     await tester.ensureVisible(saveButton);
     await tester.tap(saveButton);
@@ -88,6 +91,8 @@ void main() {
     );
     expect(find.text('Name: Aditya'), findsOneWidget);
 
+    await tester.tap(find.text('Personal Information'));
+    await tester.pumpAndSettle();
     final clearButton = find.text('Clear');
     await tester.ensureVisible(clearButton);
     await tester.tap(clearButton);

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import '../core/constants/app_routes.dart';
 import '../core/router/app_navigation.dart';
 import '../core/theme/app_colors.dart';
 import '../providers/catalog_provider.dart';
+import '../providers/profile_provider.dart';
 import '../providers/quiz_gamification_provider.dart';
 import 'duotone_icons.dart';
 
@@ -190,6 +193,9 @@ class CareerGuideTopBar extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final shadowColor = AppColors.cardShadow(Theme.of(context).brightness);
     final quizProvider = context.watch<QuizGamificationProvider>();
+    final avatarPath = context.watch<ProfileProvider>().profile.avatarPath;
+    final hasCustomAvatar =
+        avatarPath.isNotEmpty && File(avatarPath).existsSync();
     final hasPendingSteps =
         !quizProvider.progress.completedQuiz ||
         !quizProvider.progress.exploredColleges ||
@@ -245,11 +251,11 @@ class CareerGuideTopBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          // Exact Reference Profile Circle (white rim + soft lavender disc + violet silhouette)
+          // Exact Reference Profile Circle (custom picked photo OR default lavender disc + violet silhouette)
           _CircleHeaderButton(
             tooltip: 'Profile',
             shadowColor: shadowColor,
-            onTap: () => context.pushUnique(AppRoutes.profile),
+            onTap: () => context.switchRootTab(AppRoutes.profile),
             child: Container(
               width: 36,
               height: 36,
@@ -260,11 +266,24 @@ class CareerGuideTopBar extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
               clipBehavior: Clip.antiAlias,
-              child: CustomPaint(
-                painter: _ProfileSilhouettePainter(
-                  color: isDark ? scheme.primary : const Color(0xFF7B3CE0),
-                ),
-              ),
+              child: hasCustomAvatar
+                  ? Image.file(
+                      File(avatarPath),
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => CustomPaint(
+                        painter: _ProfileSilhouettePainter(
+                          color: isDark
+                              ? scheme.primary
+                              : const Color(0xFF7B3CE0),
+                        ),
+                      ),
+                    )
+                  : CustomPaint(
+                      painter: _ProfileSilhouettePainter(
+                        color:
+                            isDark ? scheme.primary : const Color(0xFF7B3CE0),
+                      ),
+                    ),
             ),
           ),
         ],

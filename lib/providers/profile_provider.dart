@@ -24,16 +24,27 @@ class ProfileProvider extends ChangeNotifier {
     required String name,
     required int age,
     required String goal,
+    String? avatarPath,
   }) async {
     final updated = Profile(
       name: name.trim(),
       age: age < 0 ? 0 : age,
       goal: goal.trim(),
+      avatarPath: avatarPath ?? _profile.avatarPath,
     );
     _profile = updated;
     notifyListeners();
     await _storage.saveProfile(updated);
   }
+
+  Future<void> setAvatarPath(String path) async {
+    final updated = _profile.copyWith(avatarPath: path.trim());
+    _profile = updated;
+    notifyListeners();
+    await _storage.saveProfile(updated);
+  }
+
+  Future<void> clearAvatar() => setAvatarPath('');
 
   Future<void> clearProfile() async {
     _profile = const Profile();

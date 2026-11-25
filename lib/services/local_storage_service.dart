@@ -22,6 +22,7 @@ class LocalStorageService {
   static const String keyProfileName = 'profile_name';
   static const String keyProfileAge = 'profile_age';
   static const String keyProfileGoal = 'profile_goal';
+  static const String keyProfileAvatarPath = 'profile_avatar_path';
   static const String keyThemeMode = 'theme_mode';
   static const String keySavedCareer = 'saved_career_key';
   static const String keyHasSeenWelcome = 'has_seen_welcome';
@@ -80,6 +81,7 @@ class LocalStorageService {
       name: prefs.getString(keyProfileName) ?? '',
       age: prefs.getInt(keyProfileAge) ?? 0,
       goal: prefs.getString(keyProfileGoal) ?? '',
+      avatarPath: prefs.getString(keyProfileAvatarPath) ?? '',
     );
   }
 
@@ -88,6 +90,7 @@ class LocalStorageService {
       await prefs.setString(keyProfileName, profile.name);
       await prefs.setInt(keyProfileAge, profile.age);
       await prefs.setString(keyProfileGoal, profile.goal);
+      await prefs.setString(keyProfileAvatarPath, profile.avatarPath);
     });
   }
 
@@ -96,6 +99,7 @@ class LocalStorageService {
       await prefs.remove(keyProfileName);
       await prefs.remove(keyProfileAge);
       await prefs.remove(keyProfileGoal);
+      await prefs.remove(keyProfileAvatarPath);
     });
   }
 
