@@ -63,7 +63,12 @@ class FloatingBottomNav extends StatelessWidget {
                 selectedIcon: Icons.explore_rounded,
                 selected: currentTab == CareerGuideTab.explore,
                 isDark: isDark,
-                onTap: onExploreTap ?? () => context.push(AppRoutes.colleges),
+                onTap: onExploreTap ??
+                    () {
+                      if (currentTab != CareerGuideTab.explore) {
+                        context.go(AppRoutes.explore);
+                      }
+                    },
               ),
               _NavItem(
                 label: 'Saved',

@@ -89,7 +89,6 @@ class _SplashScreenState extends State<SplashScreen>
                 Image.asset(
                   'assets/images/splash_scene.png',
                   fit: BoxFit.cover,
-                  alignment: Alignment.center,
                   errorBuilder: (_, _, _) => const SizedBox.shrink(),
                 ),
                 // Soft top fade into upper lavender canvas

@@ -7,6 +7,7 @@ import '../../screens/college_comparison_screen.dart';
 import '../../screens/college_details_screen.dart';
 import '../../screens/colleges_screen.dart';
 import '../../screens/community_screen.dart';
+import '../../screens/explore_screen.dart';
 import '../../screens/gamification_dashboard_screen.dart';
 import '../../screens/home_screen.dart';
 import '../../screens/parental_screen.dart';
@@ -36,6 +37,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.explore,
+        builder: (context, state) => const ExploreScreen(),
       ),
       GoRoute(
         path: AppRoutes.quiz,

@@ -199,9 +199,8 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       extendBody: true,
-      bottomNavigationBar: FloatingBottomNav(
+      bottomNavigationBar: const FloatingBottomNav(
         currentTab: CareerGuideTab.home,
-        onExploreTap: () => _openMoreModulesSheet(context),
       ),
       body: Stack(
         children: [
